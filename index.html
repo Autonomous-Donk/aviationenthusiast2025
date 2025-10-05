@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>飞行爱好者飞机数据库</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <nav class="navbar">
+    <div class="logo">✈️ 飞行爱好者</div>
+    <ul class="nav-links">
+      <li><a href="#">首页</a></li>
+      <li><a href="#aircraftGrid">浏览</a></li>
+      <li><a href="#compareSection">对比</a></li>
+      <li><a href="#about">关于</a></li>
+    </ul>
+    <button id="themeToggle">🌙</button>
+  </nav>
+
+  <header>
+    <h1>飞行爱好者飞机数据库</h1>
+    <p>（不含军机，截止2025年10月1日）</p>
+  </header>
+
+  <!-- 筛选区 -->
+  <div class="filters">
+    <input type="text" id="search" placeholder="搜索型号或制造商...">
+    <select id="makerFilter">
+      <option value="">全部制造商</option>
+      <option value="波音公司">波音公司</option>
+      <option value="空中客车">空中客车</option>
+    </select>
+    <select id="typeFilter">
+      <option value="">全部类型</option>
+      <option value="客机">客机</option>
+      <option value="货机">货机</option>
+    </select>
+    <select id="eraFilter">
+      <option value="">全部年代</option>
+      <option value="1950s">1950年代</option>
+      <option value="1960s">1960年代</option>
+      <option value="1970s">1970年代</option>
+      <option value="1980s">1980年代</option>
+      <option value="1990s">1990年代</option>
+      <option value="2000s">2000年代</option>
+      <option value="2010s">2010年代</option>
+    </select>
+    <select id="engineFilter">
+      <option value="">全部发动机类型</option>
+      <option value="涡扇">涡扇</option>
+      <option value="涡桨">涡桨</option>
+    </select>
+    <input type="number" id="minRange" placeholder="最小航程 km">
+    <input type="number" id="maxRange" placeholder="最大航程 km">
+  </div>
+
+  <!-- 展示区 -->
+  <div class="grid" id="aircraftGrid"></div>
+
+  <!-- 对比区 -->
+  <div id="compareSection">
+    <h2>飞机对比</h2>
+    <div id="compareTable"></div>
+  </div>
+
+  <!-- 关于区 -->
+  <section id="about">
+    <h2>关于本站</h2>
+    <p>本网站为飞行爱好者打造，收录了波音与空客的主要机型数据，支持搜索、筛选和对比功能。未来将持续扩展更多制造商和机型。</p>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
