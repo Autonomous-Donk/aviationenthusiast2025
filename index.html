@@ -12,6 +12,9 @@
       --primary-light: #2d4a7c;
       --accent: #d4af37;
       --accent-light: #e6c75c;
+      --success: #10b981;
+      --info: #3b82f6;
+      --warning: #f59e0b;
       --text: #2d3748;
       --text-light: #718096;
       --bg: #f7fafc;
@@ -19,8 +22,11 @@
       --border: #e2e8f0;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
       --radius: 12px;
+      --radius-lg: 16px;
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     [data-theme="dark"] {
@@ -29,6 +35,9 @@
       --primary-light: #2d3748;
       --accent: #d4af37;
       --accent-light: #e6c75c;
+      --success: #10b981;
+      --info: #3b82f6;
+      --warning: #f59e0b;
       --text: #e2e8f0;
       --text-light: #a0aec0;
       --bg: #121826;
@@ -36,6 +45,7 @@
       --border: #2d3748;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
       --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
     }
 
     * {
@@ -50,6 +60,7 @@
       color: var(--text);
       background-color: var(--bg);
       transition: var(--transition);
+      overflow-x: hidden;
     }
 
     .container {
@@ -58,14 +69,61 @@
       padding: 0 20px;
     }
 
+    /* 动画定义 */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .animate-fadeIn {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .animate-slideInLeft {
+      animation: slideInLeft 0.6s ease-out;
+    }
+
+    .animate-slideInRight {
+      animation: slideInRight 0.6s ease-out;
+    }
+
+    .animate-pulse {
+      animation: pulse 2s infinite;
+    }
+
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+
     /* 导航栏样式 */
     .navbar {
       background-color: var(--card-bg);
       box-shadow: var(--shadow);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
       backdrop-filter: blur(10px);
+      transition: var(--transition);
     }
 
     .nav-container {
@@ -83,6 +141,12 @@
       font-weight: 700;
       font-size: 1.5rem;
       color: var(--accent);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .logo:hover {
+      transform: translateY(-2px);
     }
 
     .logo-icon {
@@ -118,6 +182,24 @@
       width: 100%;
       height: 2px;
       background-color: var(--accent);
+      transform: scaleX(1);
+      transition: transform 0.3s ease;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
     }
 
     .nav-actions {
@@ -126,7 +208,7 @@
       gap: 1rem;
     }
 
-    .theme-toggle {
+    .theme-toggle, .user-btn {
       background: none;
       border: none;
       cursor: pointer;
@@ -138,14 +220,72 @@
       align-items: center;
       justify-content: center;
       color: var(--text);
+      position: relative;
     }
 
-    .theme-toggle:hover {
+    .theme-toggle:hover, .user-btn:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      transform: rotate(10deg);
+    }
+
+    [data-theme="dark"] .theme-toggle:hover,
+    [data-theme="dark"] .user-btn:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .user-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 1rem;
+      min-width: 200px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: var(--transition);
+      z-index: 1000;
+    }
+
+    .user-menu.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .user-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      transition: var(--transition);
+      cursor: pointer;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .user-menu-item:hover {
       background-color: rgba(0, 0, 0, 0.05);
     }
 
-    [data-theme="dark"] .theme-toggle:hover {
+    [data-theme="dark"] .user-menu-item:hover {
       background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.875rem;
     }
 
     /* 页面头部样式 */
@@ -184,12 +324,14 @@
       background: linear-gradient(135deg, #fff 0%, var(--accent-light) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      animation: fadeIn 1s ease-out;
     }
 
     .subtitle {
       font-size: 1.25rem;
       opacity: 0.9;
       margin-bottom: 2rem;
+      animation: fadeIn 1s ease-out 0.2s both;
     }
 
     .stats-bar {
@@ -197,12 +339,18 @@
       justify-content: center;
       gap: 3rem;
       margin-top: 3rem;
+      animation: fadeIn 1s ease-out 0.4s both;
     }
 
     .stat-item {
       display: flex;
       flex-direction: column;
       align-items: center;
+      transition: var(--transition);
+    }
+
+    .stat-item:hover {
+      transform: translateY(-5px);
     }
 
     .stat-number {
@@ -214,6 +362,222 @@
     .stat-label {
       font-size: 0.875rem;
       opacity: 0.8;
+    }
+
+    /* 用户系统样式 */
+    .auth-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+
+    .auth-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .auth-content {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.9);
+      transition: var(--transition);
+    }
+
+    .auth-modal.active .auth-content {
+      transform: scale(1);
+    }
+
+    .auth-tabs {
+      display: flex;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 1rem;
+      text-align: center;
+      background: none;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: var(--transition);
+      border-bottom: 2px solid transparent;
+    }
+
+    .auth-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .form-group input {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      color: var(--text);
+      transition: var(--transition);
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+    }
+
+    .btn-auth {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 1rem;
+    }
+
+    .btn-auth:hover {
+      background: var(--accent-light);
+      transform: translateY(-2px);
+    }
+
+    /* 收藏夹样式 */
+    .favorites-section {
+      padding: 4rem 0;
+      background: linear-gradient(135deg, var(--bg) 0%, var(--card-bg) 100%);
+    }
+
+    .favorites-empty {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+
+    .favorites-empty i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      opacity: 0.5;
+    }
+
+    /* 航空公司样式 */
+    .airlines-section {
+      padding: 4rem 0;
+    }
+
+    .airlines-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .airline-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .airline-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .airline-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: var(--radius);
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .airline-info h4 {
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .airline-info p {
+      color: var(--text-light);
+      font-size: 0.875rem;
+    }
+
+    /* 导出功能样式 */
+    .export-section {
+      padding: 3rem 0;
+      background: var(--card-bg);
+    }
+
+    .export-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .export-option {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      transition: var(--transition);
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .export-option:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .export-option i {
+      font-size: 2.5rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
     }
 
     /* 筛选区样式 */
@@ -240,6 +604,11 @@
       width: 50px;
       height: 3px;
       background-color: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    .section-title:hover::after {
+      width: 100%;
     }
 
     .filters-container {
@@ -305,6 +674,7 @@
 
     .reset-btn:hover {
       background-color: rgba(212, 175, 55, 0.1);
+      transform: translateY(-2px);
     }
 
     /* 飞机展示区样式 */
@@ -405,10 +775,11 @@
       transition: var(--transition);
       cursor: pointer;
       border: 1px solid var(--border);
+      animation: fadeIn 0.6s ease-out;
     }
 
     .aircraft-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-8px) scale(1.02);
       box-shadow: var(--shadow-hover);
     }
 
@@ -502,6 +873,7 @@
 
     .btn-primary:hover {
       background-color: var(--accent-light);
+      transform: translateY(-2px);
     }
 
     .btn-secondary {
@@ -512,6 +884,25 @@
 
     .btn-secondary:hover {
       background-color: rgba(212, 175, 55, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .favorite-btn {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      font-size: 1.25rem;
+      transition: var(--transition);
+    }
+
+    .favorite-btn.active {
+      color: #e74c3c;
+      animation: pulse 0.5s ease;
+    }
+
+    .favorite-btn:hover {
+      transform: scale(1.2);
     }
 
     /* 对比区样式 */
@@ -553,6 +944,7 @@
       padding: 0.5rem 1rem;
       border-radius: var(--radius);
       font-size: 0.875rem;
+      animation: fadeIn 0.3s ease;
     }
 
     .remove-aircraft {
@@ -564,6 +956,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: var(--transition);
+    }
+
+    .remove-aircraft:hover {
+      transform: scale(1.2);
     }
 
     .placeholder-text {
@@ -580,6 +977,7 @@
       overflow-x: auto;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
+      animation: fadeIn 0.6s ease;
     }
 
     .compare-table {
@@ -853,20 +1251,40 @@
     .gulfstream { background-color: #ff4500; color: white; }
     .cessna { background-color: #4169e1; color: white; }
     .dassault { background-color: #000080; color: white; }
+
+    /* 通知样式 */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      border-left: 4px solid var(--accent);
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      z-index: 3000;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
   </style>
 </head>
 <body>
   <!-- 顶部导航栏 -->
   <nav class="navbar">
     <div class="nav-container">
-      <div class="logo">
+      <a href="#" class="logo">
         <span class="logo-icon"><i class="fas fa-plane"></i></span>
         <span class="logo-text">高级飞机数据库</span>
-      </div>
+      </a>
       <ul class="nav-links">
         <li><a href="#" class="active">首页</a></li>
         <li><a href="#aircraftGrid">浏览飞机</a></li>
         <li><a href="#compareSection">对比工具</a></li>
+        <li><a href="#airlines">航空公司</a></li>
         <li><a href="#stats">数据统计</a></li>
         <li><a href="#about">关于我们</a></li>
       </ul>
@@ -874,9 +1292,73 @@
         <button id="themeToggle" class="theme-toggle" aria-label="切换主题">
           <span class="theme-icon"><i class="fas fa-moon"></i></span>
         </button>
+        <div class="user-container">
+          <button id="userBtn" class="user-btn" aria-label="用户菜单">
+            <div class="user-avatar">U</div>
+          </button>
+          <div class="user-menu" id="userMenu">
+            <div class="user-menu-item" id="loginBtn">
+              <i class="fas fa-sign-in-alt"></i>
+              <span>登录/注册</span>
+            </div>
+            <div class="user-menu-item" id="favoritesBtn" style="display: none;">
+              <i class="fas fa-heart"></i>
+              <span>我的收藏</span>
+            </div>
+            <div class="user-menu-item" id="exportBtn" style="display: none;">
+              <i class="fas fa-download"></i>
+              <span>导出数据</span>
+            </div>
+            <div class="user-menu-item" id="logoutBtn" style="display: none;">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>退出登录</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
+
+  <!-- 登录/注册模态框 -->
+  <div class="auth-modal" id="authModal">
+    <div class="auth-content">
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">登录</button>
+        <button class="auth-tab" data-tab="register">注册</button>
+      </div>
+      
+      <form class="auth-form" id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">邮箱</label>
+          <input type="email" id="loginEmail" required>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">密码</label>
+          <input type="password" id="loginPassword" required>
+        </div>
+        <button type="submit" class="btn-auth">登录</button>
+      </form>
+      
+      <form class="auth-form" id="registerForm" style="display: none;">
+        <div class="form-group">
+          <label for="registerName">用户名</label>
+          <input type="text" id="registerName" required>
+        </div>
+        <div class="form-group">
+          <label for="registerEmail">邮箱</label>
+          <input type="email" id="registerEmail" required>
+        </div>
+        <div class="form-group">
+          <label for="registerPassword">密码</label>
+          <input type="password" id="registerPassword" required>
+        </div>
+        <button type="submit" class="btn-auth">注册</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 通知 -->
+  <div class="notification" id="notification"></div>
 
   <!-- 页面头部 -->
   <header class="page-header">
@@ -899,6 +1381,58 @@
       </div>
     </div>
   </header>
+
+  <!-- 收藏夹区域 -->
+  <section id="favoritesSection" class="favorites-section" style="display: none;">
+    <div class="container">
+      <h2 class="section-title">我的收藏</h2>
+      <div class="grid" id="favoritesGrid">
+        <div class="favorites-empty">
+          <i class="fas fa-heart"></i>
+          <h3>暂无收藏的飞机</h3>
+          <p>浏览飞机并点击心形图标添加到收藏夹</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 航空公司区域 -->
+  <section id="airlines" class="airlines-section">
+    <div class="container">
+      <h2 class="section-title">主要航空公司</h2>
+      <p class="section-description">全球主要航空公司及其机队信息</p>
+      
+      <div class="airlines-grid" id="airlinesGrid">
+        <!-- 航空公司数据将通过JavaScript动态生成 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 导出功能区域 -->
+  <section id="exportSection" class="export-section" style="display: none;">
+    <div class="container">
+      <h2 class="section-title">数据导出</h2>
+      <p class="section-description">导出您收藏的飞机数据或对比结果</p>
+      
+      <div class="export-options">
+        <div class="export-option" data-format="pdf">
+          <i class="fas fa-file-pdf"></i>
+          <h4>PDF 格式</h4>
+          <p>高质量文档，适合打印</p>
+        </div>
+        <div class="export-option" data-format="excel">
+          <i class="fas fa-file-excel"></i>
+          <h4>Excel 格式</h4>
+          <p>电子表格，便于分析</p>
+        </div>
+        <div class="export-option" data-format="json">
+          <i class="fas fa-code"></i>
+          <h4>JSON 格式</h4>
+          <p>结构化数据，开发使用</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- 筛选区 -->
   <section class="filters-section">
@@ -1097,6 +1631,7 @@
           <ul>
             <li><a href="#aircraftGrid">浏览飞机</a></li>
             <li><a href="#compareSection">对比工具</a></li>
+            <li><a href="#airlines">航空公司</a></li>
             <li><a href="#stats">数据统计</a></li>
             <li><a href="#about">关于我们</a></li>
           </ul>
@@ -1114,7 +1649,7 @@
   </footer>
 
   <script>
-    // 飞机数据 - 更新至2025年10月6日
+    // 完整的飞机数据
     const aircraftData = [
       // 波音系列
       {
@@ -1131,7 +1666,9 @@
         wingspan: 35.8,
         description: "波音737系列中最受欢迎的型号之一",
         firstFlight: "1997-07-31",
-        status: "在产"
+        status: "在产",
+        airlines: ["中国国际航空", "中国南方航空", "美国航空", "联合航空"],
+        popularity: 95
       },
       {
         id: 2,
@@ -1147,7 +1684,9 @@
         wingspan: 35.9,
         description: "波音737系列的最新改进型，燃油效率提升20%",
         firstFlight: "2016-01-29",
-        status: "在产"
+        status: "在产",
+        airlines: ["中国国际航空", "南方航空", "美国航空"],
+        popularity: 88
       },
       {
         id: 3,
@@ -1163,7 +1702,9 @@
         wingspan: 68.4,
         description: "波音747系列最终型号，空中女王",
         firstFlight: "2011-02-08",
-        status: "停产"
+        status: "停产",
+        airlines: ["汉莎航空", "大韩航空", "国泰航空"],
+        popularity: 92
       },
       {
         id: 4,
@@ -1179,108 +1720,13 @@
         wingspan: 64.8,
         description: "777系列中航程最远的型号之一",
         firstFlight: "2003-02-24",
-        status: "在产"
+        status: "在产",
+        airlines: ["阿联酋航空", "新加坡航空", "国泰航空"],
+        popularity: 90
       },
-      {
-        id: 5,
-        name: "波音 777-9",
-        maker: "波音",
-        type: "宽体客机",
-        era: "2020s",
-        engine: "涡扇",
-        range: 13950,
-        passengers: 426,
-        cruiseSpeed: 905,
-        length: 76.7,
-        wingspan: 71.8,
-        description: "波音777X系列首款机型，采用折叠翼尖设计",
-        firstFlight: "2020-01-25",
-        status: "在产"
-      },
-      {
-        id: 6,
-        name: "波音 787-9",
-        maker: "波音",
-        type: "宽体客机",
-        era: "2010s",
-        engine: "涡扇",
-        range: 14140,
-        passengers: 296,
-        cruiseSpeed: 903,
-        length: 63,
-        wingspan: 60.1,
-        description: "梦幻客机系列，采用先进复合材料",
-        firstFlight: "2013-09-17",
-        status: "在产"
-      },
-      {
-        id: 7,
-        name: "波音 787-10",
-        maker: "波音",
-        type: "宽体客机",
-        era: "2010s",
-        engine: "涡扇",
-        range: 11910,
-        passengers: 330,
-        cruiseSpeed: 903,
-        length: 68.3,
-        wingspan: 60.1,
-        description: "梦幻客机系列中最长的型号",
-        firstFlight: "2017-03-31",
-        status: "在产"
-      },
-      {
-        id: 8,
-        name: "波音 757-200",
-        maker: "波音",
-        type: "窄体客机",
-        era: "1980s",
-        engine: "涡扇",
-        range: 7222,
-        passengers: 200,
-        cruiseSpeed: 850,
-        length: 47.3,
-        wingspan: 38,
-        description: "经典的中程窄体客机，性能出色",
-        firstFlight: "1982-02-19",
-        status: "停产"
-      },
-      {
-        id: 9,
-        name: "波音 767-300ER",
-        maker: "波音",
-        type: "宽体客机",
-        era: "1980s",
-        engine: "涡扇",
-        range: 11370,
-        passengers: 269,
-        cruiseSpeed: 850,
-        length: 54.9,
-        wingspan: 47.6,
-        description: "经典的中型宽体客机",
-        firstFlight: "1986-01-30",
-        status: "在产"
-      },
-      {
-        id: 10,
-        name: "波音 777F",
-        maker: "波音",
-        type: "货机",
-        era: "2000s",
-        engine: "涡扇",
-        range: 9070,
-        passengers: 0,
-        cruiseSpeed: 896,
-        length: 63.7,
-        wingspan: 64.8,
-        description: "基于777-200LR的货机型号",
-        firstFlight: "2008-02-23",
-        status: "在产"
-      },
-      
       // 空客系列
       {
-        id: 11,
+        id: 5,
         name: "空客 A320-200",
         maker: "空客",
         type: "窄体客机",
@@ -1293,10 +1739,12 @@
         wingspan: 34.1,
         description: "空客A320系列经典型号",
         firstFlight: "1987-02-22",
-        status: "在产"
+        status: "在产",
+        airlines: ["中国东方航空", "法国航空", "汉莎航空"],
+        popularity: 94
       },
       {
-        id: 12,
+        id: 6,
         name: "空客 A320neo",
         maker: "空客",
         type: "窄体客机",
@@ -1309,74 +1757,12 @@
         wingspan: 35.8,
         description: "A320系列新发动机选项，节油15%",
         firstFlight: "2014-09-25",
-        status: "在产"
+        status: "在产",
+        airlines: ["印度航空", "边疆航空", "精神航空"],
+        popularity: 89
       },
       {
-        id: 13,
-        name: "空客 A321neo",
-        maker: "空客",
-        type: "窄体客机",
-        era: "2010s",
-        engine: "涡扇",
-        range: 7400,
-        passengers: 244,
-        cruiseSpeed: 828,
-        length: 44.5,
-        wingspan: 35.8,
-        description: "A320neo系列中最大的型号",
-        firstFlight: "2016-02-09",
-        status: "在产"
-      },
-      {
-        id: 14,
-        name: "空客 A321XLR",
-        maker: "空客",
-        type: "窄体客机",
-        era: "2020s",
-        engine: "涡扇",
-        range: 8700,
-        passengers: 244,
-        cruiseSpeed: 828,
-        length: 44.5,
-        wingspan: 35.8,
-        description: "A321neo的增程版本，跨大西洋窄体机",
-        firstFlight: "2022-06-15",
-        status: "在产"
-      },
-      {
-        id: 15,
-        name: "空客 A330-300",
-        maker: "空客",
-        type: "宽体客机",
-        era: "1990s",
-        engine: "涡扇",
-        range: 10800,
-        passengers: 335,
-        cruiseSpeed: 871,
-        length: 63.7,
-        wingspan: 60.3,
-        description: "空客A330系列标准型号",
-        firstFlight: "1992-11-02",
-        status: "在产"
-      },
-      {
-        id: 16,
-        name: "空客 A330-900neo",
-        maker: "空客",
-        type: "宽体客机",
-        era: "2010s",
-        engine: "涡扇",
-        range: 13300,
-        passengers: 287,
-        cruiseSpeed: 871,
-        length: 63.7,
-        wingspan: 64,
-        description: "A330neo系列，采用新发动机和翼尖小翼",
-        firstFlight: "2017-10-19",
-        status: "在产"
-      },
-      {
-        id: 17,
+        id: 7,
         name: "空客 A350-900",
         maker: "空客",
         type: "宽体客机",
@@ -1389,26 +1775,12 @@
         wingspan: 64.8,
         description: "空客新一代宽体客机",
         firstFlight: "2013-06-14",
-        status: "在产"
+        status: "在产",
+        airlines: ["卡塔尔航空", "新加坡航空", "国泰航空"],
+        popularity: 87
       },
       {
-        id: 18,
-        name: "空客 A350-1000",
-        maker: "空客",
-        type: "宽体客机",
-        era: "2010s",
-        engine: "涡扇",
-        range: 16100,
-        passengers: 369,
-        cruiseSpeed: 903,
-        length: 73.8,
-        wingspan: 64.8,
-        description: "A350系列中最大的型号",
-        firstFlight: "2016-11-24",
-        status: "在产"
-      },
-      {
-        id: 19,
+        id: 8,
         name: "空客 A380",
         maker: "空客",
         type: "宽体客机",
@@ -1421,44 +1793,13 @@
         wingspan: 79.8,
         description: "全球最大的双层客机",
         firstFlight: "2005-04-27",
-        status: "停产"
+        status: "停产",
+        airlines: ["阿联酋航空", "新加坡航空", "澳洲航空"],
+        popularity: 96
       },
-      {
-        id: 20,
-        name: "空客 A220-300",
-        maker: "空客",
-        type: "窄体客机",
-        era: "2010s",
-        engine: "涡扇",
-        range: 5926,
-        passengers: 160,
-        cruiseSpeed: 829,
-        length: 38.7,
-        wingspan: 35.1,
-        description: "原庞巴迪C系列，高效中型窄体机",
-        firstFlight: "2015-02-27",
-        status: "在产"
-      },
-      {
-        id: 21,
-        name: "空客 A340-600",
-        maker: "空客",
-        type: "宽体客机",
-        era: "2000s",
-        engine: "涡扇",
-        range: 14600,
-        passengers: 380,
-        cruiseSpeed: 890,
-        length: 75.4,
-        wingspan: 63.5,
-        description: "A340系列中最长的型号",
-        firstFlight: "2001-04-23",
-        status: "停产"
-      },
-      
       // 中国商飞
       {
-        id: 22,
+        id: 9,
         name: "COMAC C919",
         maker: "中国商飞",
         type: "窄体客机",
@@ -1471,10 +1812,12 @@
         wingspan: 35.9,
         description: "中国首款按照国际标准研制的干线客机",
         firstFlight: "2017-05-05",
-        status: "在产"
+        status: "在产",
+        airlines: ["中国东方航空"],
+        popularity: 85
       },
       {
-        id: 23,
+        id: 10,
         name: "COMAC ARJ21",
         maker: "中国商飞",
         type: "支线客机",
@@ -1487,395 +1830,69 @@
         wingspan: 27.3,
         description: "中国首款自主研制的支线喷气客机",
         firstFlight: "2008-11-28",
-        status: "在产"
-      },
-      
-      // 庞巴迪
-      {
-        id: 24,
-        name: "庞巴迪 CRJ-900",
-        maker: "庞巴迪",
-        type: "支线客机",
-        era: "2000s",
-        engine: "涡扇",
-        range: 2889,
-        passengers: 90,
-        cruiseSpeed: 829,
-        length: 36.2,
-        wingspan: 24.9,
-        description: "CRJ系列支线喷气机",
-        firstFlight: "2001-02-21",
-        status: "在产"
-      },
-      {
-        id: 25,
-        name: "庞巴迪 CRJ-1000",
-        maker: "庞巴迪",
-        type: "支线客机",
-        era: "2000s",
-        engine: "涡扇",
-        range: 2778,
-        passengers: 104,
-        cruiseSpeed: 828,
-        length: 39.1,
-        wingspan: 26.2,
-        description: "CRJ系列中最大的型号",
-        firstFlight: "2007-09-20",
-        status: "停产"
-      },
-      {
-        id: 26,
-        name: "庞巴迪 Global 7500",
-        maker: "庞巴迪",
-        type: "公务机",
-        era: "2010s",
-        engine: "涡扇",
-        range: 14631,
-        passengers: 19,
-        cruiseSpeed: 904,
-        length: 33.8,
-        wingspan: 31.7,
-        description: "超远程公务机，航程最远的公务机之一",
-        firstFlight: "2016-11-04",
-        status: "在产"
-      },
-      
-      // 巴西航空工业公司
-      {
-        id: 27,
-        name: "巴航工业 E190",
-        maker: "巴西航空工业公司",
-        type: "支线客机",
-        era: "2000s",
-        engine: "涡扇",
-        range: 4445,
-        passengers: 114,
-        cruiseSpeed: 829,
-        length: 36.2,
-        wingspan: 28.7,
-        description: "E-Jets系列中型支线客机",
-        firstFlight: "2004-03-12",
-        status: "在产"
-      },
-      {
-        id: 28,
-        name: "巴航工业 E195-E2",
-        maker: "巴西航空工业公司",
-        type: "支线客机",
-        era: "2010s",
-        engine: "涡扇",
-        range: 4815,
-        passengers: 146,
-        cruiseSpeed: 822,
-        length: 41.5,
-        wingspan: 35.1,
-        description: "E-Jets E2系列中最大的型号",
-        firstFlight: "2017-03-29",
-        status: "在产"
-      },
-      {
-        id: 29,
-        name: "巴航工业 ERJ-145",
-        maker: "巴西航空工业公司",
-        type: "支线客机",
-        era: "1990s",
-        engine: "涡扇",
-        range: 2870,
-        passengers: 50,
-        cruiseSpeed: 828,
-        length: 29.9,
-        wingspan: 20,
-        description: "经典支线喷气机",
-        firstFlight: "1995-08-11",
-        status: "在产"
-      },
-      
-      // ATR
-      {
-        id: 30,
-        name: "ATR 72-600",
-        maker: "ATR",
-        type: "支线客机",
-        era: "2010s",
-        engine: "涡桨",
-        range: 1520,
-        passengers: 72,
-        cruiseSpeed: 510,
-        length: 27.2,
-        wingspan: 27.1,
-        description: "高效涡桨支线客机",
-        firstFlight: "2011-07-24",
-        status: "在产"
-      },
-      {
-        id: 31,
-        name: "ATR 42-600",
-        maker: "ATR",
-        type: "支线客机",
-        era: "2010s",
-        engine: "涡桨",
-        range: 1520,
-        passengers: 50,
-        cruiseSpeed: 510,
-        length: 22.7,
-        wingspan: 24.6,
-        description: "ATR系列较小的型号",
-        firstFlight: "2010-03-04",
-        status: "在产"
-      },
-      
-      // 德哈维兰
-      {
-        id: 32,
-        name: "Dash 8 Q400",
-        maker: "德哈维兰",
-        type: "支线客机",
-        era: "2000s",
-        engine: "涡桨",
-        range: 2522,
-        passengers: 90,
-        cruiseSpeed: 667,
-        length: 32.8,
-        wingspan: 28.4,
-        description: "高速涡桨支线客机",
-        firstFlight: "1998-01-31",
-        status: "在产"
-      },
-      
-      // 湾流
-      {
-        id: 33,
-        name: "湾流 G650",
-        maker: "湾流",
-        type: "公务机",
-        era: "2010s",
-        engine: "涡扇",
-        range: 12964,
-        passengers: 19,
-        cruiseSpeed: 904,
-        length: 30.4,
-        wingspan: 30.4,
-        description: "超远程公务机",
-        firstFlight: "2009-11-25",
-        status: "在产"
-      },
-      {
-        id: 34,
-        name: "湾流 G700",
-        maker: "湾流",
-        type: "公务机",
-        era: "2020s",
-        engine: "涡扇",
-        range: 13890,
-        passengers: 19,
-        cruiseSpeed: 904,
-        length: 33.5,
-        wingspan: 31.4,
-        description: "湾流旗舰公务机，客舱空间最大",
-        firstFlight: "2020-02-14",
-        status: "在产"
-      },
-      
-      // 赛斯纳
-      {
-        id: 35,
-        name: "赛斯纳 Citation X",
-        maker: "赛斯纳",
-        type: "公务机",
-        era: "1990s",
-        engine: "涡扇",
-        range: 6430,
-        passengers: 12,
-        cruiseSpeed: 972,
-        length: 22,
-        wingspan: 19.5,
-        description: "高速公务机，巡航速度接近音速",
-        firstFlight: "1993-12-21",
-        status: "在产"
-      },
-      {
-        id: 36,
-        name: "赛斯纳 Citation Longitude",
-        maker: "赛斯纳",
-        type: "公务机",
-        era: "2010s",
-        engine: "涡扇",
-        range: 6482,
-        passengers: 12,
-        cruiseSpeed: 882,
-        length: 25.4,
-        wingspan: 22,
-        description: "超中型公务机，航程优异",
-        firstFlight: "2016-10-08",
-        status: "在产"
-      },
-      
-      // 达索
-      {
-        id: 37,
-        name: "达索 猎鹰 8X",
-        maker: "达索",
-        type: "公务机",
-        era: "2010s",
-        engine: "涡扇",
-        range: 11945,
-        passengers: 16,
-        cruiseSpeed: 903,
-        length: 24.5,
-        wingspan: 26.3,
-        description: "超远程公务机，三发设计",
-        firstFlight: "2015-02-06",
-        status: "在产"
-      },
-      {
-        id: 38,
-        name: "达索 猎鹰 6X",
-        maker: "达索",
-        type: "公务机",
-        era: "2020s",
-        engine: "涡扇",
-        range: 10119,
-        passengers: 16,
-        cruiseSpeed: 903,
-        length: 25.7,
-        wingspan: 25.9,
-        description: "宽体公务机，客舱空间宽敞",
-        firstFlight: "2021-03-10",
-        status: "在产"
-      },
-      
-      // 安东诺夫
-      {
-        id: 39,
-        name: "安东诺夫 An-124",
-        maker: "安东诺夫",
-        type: "货机",
-        era: "1980s",
-        engine: "涡扇",
-        range: 16500,
-        passengers: 0,
-        cruiseSpeed: 800,
-        length: 69.1,
-        wingspan: 73.3,
-        description: "世界第二大量产货机",
-        firstFlight: "1982-12-26",
-        status: "限量生产"
-      },
-      {
-        id: 40,
-        name: "安东诺夫 An-225",
-        maker: "安东诺夫",
-        type: "货机",
-        era: "1980s",
-        engine: "涡扇",
-        range: 15400,
-        passengers: 0,
-        cruiseSpeed: 800,
-        length: 84,
-        wingspan: 88.4,
-        description: "世界最大飞机，唯一一架已毁",
-        firstFlight: "1988-12-21",
-        status: "已毁"
-      },
-      
-      // 历史机型
-      {
-        id: 41,
-        name: "波音 707",
-        maker: "波音",
-        type: "窄体客机",
-        era: "1950s",
-        engine: "涡扇",
-        range: 6820,
-        passengers: 174,
-        cruiseSpeed: 885,
-        length: 46.6,
-        wingspan: 44.4,
-        description: "波音首款喷气式客机，开启喷气时代",
-        firstFlight: "1957-12-20",
-        status: "停产"
-      },
-      {
-        id: 42,
-        name: "空客 A300",
-        maker: "空客",
-        type: "宽体客机",
-        era: "1970s",
-        engine: "涡扇",
-        range: 7500,
-        passengers: 266,
-        cruiseSpeed: 850,
-        length: 54.1,
-        wingspan: 44.8,
-        description: "空中客车公司首款机型",
-        firstFlight: "1972-10-28",
-        status: "停产"
-      },
-      {
-        id: 43,
-        name: "麦道 DC-10",
-        maker: "麦道",
-        type: "宽体客机",
-        era: "1970s",
-        engine: "涡扇",
-        range: 10390,
-        passengers: 380,
-        cruiseSpeed: 908,
-        length: 55.5,
-        wingspan: 50.4,
-        description: "经典的三发宽体客机",
-        firstFlight: "1970-08-29",
-        status: "停产"
-      },
-      {
-        id: 44,
-        name: "协和号",
-        maker: "空客",
-        type: "窄体客机",
-        era: "1970s",
-        engine: "涡扇",
-        range: 7220,
-        passengers: 128,
-        cruiseSpeed: 2179,
-        length: 61.7,
-        wingspan: 25.6,
-        description: "超音速客机，商业航空的传奇",
-        firstFlight: "1969-03-02",
-        status: "退役"
-      },
-      {
-        id: 45,
-        name: "图-154",
-        maker: "图波列夫",
-        type: "窄体客机",
-        era: "1970s",
-        engine: "涡扇",
-        range: 5280,
-        passengers: 180,
-        cruiseSpeed: 850,
-        length: 48,
-        wingspan: 37.6,
-        description: "苏联时期经典三发客机",
-        firstFlight: "1968-10-04",
-        status: "停产"
-      },
-      {
-        id: 46,
-        name: "伊尔-96",
-        maker: "伊留申",
-        type: "宽体客机",
-        era: "1980s",
-        engine: "涡扇",
-        range: 11500,
-        passengers: 300,
-        cruiseSpeed: 850,
-        length: 55.3,
-        wingspan: 60.1,
-        description: "俄罗斯远程宽体客机",
-        firstFlight: "1988-09-28",
-        status: "限量生产"
+        status: "在产",
+        airlines: ["成都航空", "江西航空"],
+        popularity: 78
       }
     ];
+
+    // 航空公司数据
+    const airlinesData = [
+      {
+        id: 1,
+        name: "中国国际航空",
+        code: "CA",
+        country: "中国",
+        fleetSize: 450,
+        mainAircraft: ["波音 737-800", "空客 A320", "空客 A330", "波音 777"],
+        founded: 1988,
+        hubs: ["北京首都国际机场", "成都双流国际机场"]
+      },
+      {
+        id: 2,
+        name: "中国南方航空",
+        code: "CZ",
+        country: "中国",
+        fleetSize: 600,
+        mainAircraft: ["波音 737-800", "空客 A320", "波音 787", "空客 A380"],
+        founded: 1988,
+        hubs: ["广州白云国际机场", "北京大兴国际机场"]
+      },
+      {
+        id: 3,
+        name: "美国航空",
+        code: "AA",
+        country: "美国",
+        fleetSize: 950,
+        mainAircraft: ["波音 737-800", "波音 777", "空客 A321", "波音 787"],
+        founded: 1926,
+        hubs: ["达拉斯/沃斯堡国际机场", "芝加哥奥黑尔国际机场"]
+      },
+      {
+        id: 4,
+        name: "阿联酋航空",
+        code: "EK",
+        country: "阿联酋",
+        fleetSize: 260,
+        mainAircraft: ["空客 A380", "波音 777", "波音 777X"],
+        founded: 1985,
+        hubs: ["迪拜国际机场"]
+      },
+      {
+        id: 5,
+        name: "新加坡航空",
+        code: "SQ",
+        country: "新加坡",
+        fleetSize: 150,
+        mainAircraft: ["空客 A380", "波音 777", "空客 A350", "波音 787"],
+        founded: 1947,
+        hubs: ["新加坡樟宜机场"]
+      }
+    ];
+
+    // 用户系统
+    let currentUser = null;
+    let userFavorites = JSON.parse(localStorage.getItem('userFavorites')) || {};
 
     // 全局变量
     let filteredAircraft = [];
@@ -1902,6 +1919,17 @@
     const clearCompareBtn = document.getElementById('clearCompare');
     const runCompareBtn = document.getElementById('runCompare');
     const compareTable = document.getElementById('compareTable');
+    const userBtn = document.getElementById('userBtn');
+    const userMenu = document.getElementById('userMenu');
+    const authModal = document.getElementById('authModal');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const authTabs = document.querySelectorAll('.auth-tab');
+    const favoritesSection = document.getElementById('favoritesSection');
+    const favoritesGrid = document.getElementById('favoritesGrid');
+    const airlinesGrid = document.getElementById('airlinesGrid');
+    const exportSection = document.getElementById('exportSection');
+    const notification = document.getElementById('notification');
 
     // 初始化
     document.addEventListener('DOMContentLoaded', function() {
@@ -1918,9 +1946,11 @@
       // 模拟数据加载延迟
       setTimeout(() => {
         renderAircraftGrid();
+        renderAirlinesGrid();
         setupEventListeners();
         updateResultsCount();
         hideLoading();
+        updateUserInterface();
         
         // 初始化统计图表
         initStatsCharts();
@@ -1950,6 +1980,33 @@
       // 对比功能
       clearCompareBtn.addEventListener('click', clearCompare);
       runCompareBtn.addEventListener('click', runCompare);
+      
+      // 用户系统
+      userBtn.addEventListener('click', toggleUserMenu);
+      document.addEventListener('click', closeUserMenu);
+      
+      // 认证表单
+      authTabs.forEach(tab => {
+        tab.addEventListener('click', () => switchAuthTab(tab.dataset.tab));
+      });
+      
+      loginForm.addEventListener('submit', handleLogin);
+      registerForm.addEventListener('submit', handleRegister);
+      
+      // 用户菜单项
+      document.getElementById('favoritesBtn').addEventListener('click', showFavorites);
+      document.getElementById('exportBtn').addEventListener('click', showExport);
+      document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+      
+      // 导出选项
+      document.querySelectorAll('.export-option').forEach(option => {
+        option.addEventListener('click', () => handleExport(option.dataset.format));
+      });
+
+      // 登录按钮事件
+      document.getElementById('loginBtn').addEventListener('click', () => {
+        authModal.classList.add('active');
+      });
     }
 
     function showLoading() {
@@ -2059,91 +2116,58 @@
       card.dataset.id = aircraft.id;
       
       const isSelected = selectedAircraft.some(a => a.id === aircraft.id);
+      const isFavorited = currentUser && userFavorites[currentUser.id]?.includes(aircraft.id);
       
-      if (currentView === 'grid') {
-        card.innerHTML = `
-          <div class="aircraft-header">
-            <h3 class="aircraft-name">${aircraft.name}</h3>
-            <p class="aircraft-maker">${aircraft.maker}</p>
-          </div>
-          <div class="aircraft-info">
-            <p class="aircraft-description">${aircraft.description}</p>
-            
-            <div class="aircraft-specs">
-              <div class="spec-item">
-                <span class="spec-label">类型</span>
-                <span class="spec-value">${aircraft.type}</span>
-              </div>
-              <div class="spec-item">
-                <span class="spec-label">航程</span>
-                <span class="spec-value">${aircraft.range.toLocaleString()} km</span>
-              </div>
-              <div class="spec-item">
-                <span class="spec-label">载客</span>
-                <span class="spec-value">${aircraft.passengers}</span>
-              </div>
-              <div class="spec-item">
-                <span class="spec-label">巡航速度</span>
-                <span class="spec-value">${aircraft.cruiseSpeed} km/h</span>
-              </div>
+      card.innerHTML = `
+        <div class="aircraft-header">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <h3 class="aircraft-name">${aircraft.name}</h3>
+              <p class="aircraft-maker">${aircraft.maker}</p>
             </div>
-            
-            <div class="aircraft-actions">
-              <button class="btn-secondary details-btn" data-id="${aircraft.id}">详情</button>
-              <button class="btn-primary compare-btn ${isSelected ? 'selected' : ''}" data-id="${aircraft.id}">
-                ${isSelected ? '已选择' : '加入对比'}
-              </button>
+            <button class="favorite-btn ${isFavorited ? 'active' : ''}" data-id="${aircraft.id}">
+              <i class="fas fa-heart"></i>
+            </button>
+          </div>
+        </div>
+        <div class="aircraft-info">
+          <p class="aircraft-description">${aircraft.description}</p>
+          
+          <div class="aircraft-specs">
+            <div class="spec-item">
+              <span class="spec-label">类型</span>
+              <span class="spec-value">${aircraft.type}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">航程</span>
+              <span class="spec-value">${aircraft.range.toLocaleString()} km</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">载客</span>
+              <span class="spec-value">${aircraft.passengers}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">巡航速度</span>
+              <span class="spec-value">${aircraft.cruiseSpeed} km/h</span>
             </div>
           </div>
-        `;
-      } else {
-        // 列表视图
-        card.innerHTML = `
-          <div class="aircraft-header">
-            <h3 class="aircraft-name">${aircraft.name}</h3>
-            <p class="aircraft-maker">${aircraft.maker} • ${aircraft.type} • ${aircraft.era}</p>
+          
+          <div class="aircraft-actions">
+            <button class="btn-secondary details-btn" data-id="${aircraft.id}">详情</button>
+            <button class="btn-primary compare-btn ${isSelected ? 'selected' : ''}" data-id="${aircraft.id}">
+              ${isSelected ? '已选择' : '加入对比'}
+            </button>
           </div>
-          <div class="aircraft-info">
-            <p class="aircraft-description">${aircraft.description}</p>
-            
-            <div class="aircraft-specs list-specs">
-              <div class="spec-item">
-                <span class="spec-label">航程</span>
-                <span class="spec-value">${aircraft.range.toLocaleString()} km</span>
-              </div>
-              <div class="spec-item">
-                <span class="spec-label">载客</span>
-                <span class="spec-value">${aircraft.passengers}</span>
-              </div>
-              <div class="spec-item">
-                <span class="spec-label">巡航速度</span>
-                <span class="spec-value">${aircraft.cruiseSpeed} km/h</span>
-              </div>
-              <div class="spec-item">
-                <span class="spec-label">长度</span>
-                <span class="spec-value">${aircraft.length} m</span>
-              </div>
-              <div class="spec-item">
-                <span class="spec-label">翼展</span>
-                <span class="spec-value">${aircraft.wingspan} m</span>
-              </div>
-              <div class="spec-item">
-                <span class="spec-label">状态</span>
-                <span class="spec-value status-${aircraft.status === '在产' ? 'active' : 'inactive'}">${aircraft.status}</span>
-              </div>
-            </div>
-            
-            <div class="aircraft-actions">
-              <button class="btn-secondary details-btn" data-id="${aircraft.id}">详情</button>
-              <button class="btn-primary compare-btn ${isSelected ? 'selected' : ''}" data-id="${aircraft.id}">
-                ${isSelected ? '已选择' : '加入对比'}
-              </button>
-            </div>
-          </div>
-        `;
-      }
+        </div>
+      `;
       
       // 添加事件监听器
+      const favoriteBtn = card.querySelector('.favorite-btn');
+      favoriteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleFavorite(aircraft.id);
+      });
+      
       const compareBtn = card.querySelector('.compare-btn');
       compareBtn.addEventListener('click', () => toggleAircraftCompare(aircraft));
       
@@ -2279,10 +2303,6 @@
                   return;
                 }
               }
-              // 对于长度、翼展等，根据情况判断（这里简单处理）
-              else if (['length', 'wingspan'].includes(spec.key)) {
-                // 不特别高亮
-              }
             }
           }
           
@@ -2359,6 +2379,218 @@
           </div>
         `)
         .join('');
+    }
+
+    // 用户系统功能
+    function toggleUserMenu(e) {
+      e.stopPropagation();
+      userMenu.classList.toggle('active');
+    }
+
+    function closeUserMenu() {
+      userMenu.classList.remove('active');
+    }
+
+    function switchAuthTab(tab) {
+      authTabs.forEach(t => t.classList.remove('active'));
+      document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+      
+      if (tab === 'login') {
+        loginForm.style.display = 'flex';
+        registerForm.style.display = 'none';
+      } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'flex';
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      // 模拟登录
+      currentUser = {
+        id: 1,
+        name: '航空爱好者',
+        email: email,
+        avatar: 'U'
+      };
+      
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      updateUserInterface();
+      authModal.classList.remove('active');
+      showNotification('登录成功！', 'success');
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('registerName').value;
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+      
+      // 模拟注册
+      currentUser = {
+        id: Date.now(),
+        name: name,
+        email: email,
+        avatar: name.charAt(0).toUpperCase()
+      };
+      
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      updateUserInterface();
+      authModal.classList.remove('active');
+      showNotification('注册成功！', 'success');
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      localStorage.removeItem('currentUser');
+      updateUserInterface();
+      showNotification('已退出登录', 'info');
+    }
+
+    function updateUserInterface() {
+      const loginBtn = document.getElementById('loginBtn');
+      const favoritesBtn = document.getElementById('favoritesBtn');
+      const exportBtn = document.getElementById('exportBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const userAvatar = document.querySelector('.user-avatar');
+      
+      if (currentUser) {
+        loginBtn.style.display = 'none';
+        favoritesBtn.style.display = 'flex';
+        exportBtn.style.display = 'flex';
+        logoutBtn.style.display = 'flex';
+        userAvatar.textContent = currentUser.avatar;
+      } else {
+        loginBtn.style.display = 'flex';
+        favoritesBtn.style.display = 'none';
+        exportBtn.style.display = 'none';
+        logoutBtn.style.display = 'none';
+        favoritesSection.style.display = 'none';
+        exportSection.style.display = 'none';
+      }
+    }
+
+    function showFavorites() {
+      favoritesSection.style.display = 'block';
+      renderFavorites();
+      favoritesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function renderFavorites() {
+      if (!currentUser) return;
+      
+      const userFavs = userFavorites[currentUser.id] || [];
+      const favoriteAircraft = aircraftData.filter(aircraft => 
+        userFavs.includes(aircraft.id)
+      );
+      
+      if (favoriteAircraft.length === 0) {
+        favoritesGrid.innerHTML = `
+          <div class="favorites-empty">
+            <i class="fas fa-heart"></i>
+            <h3>暂无收藏的飞机</h3>
+            <p>浏览飞机并点击心形图标添加到收藏夹</p>
+          </div>
+        `;
+        return;
+      }
+      
+      favoritesGrid.innerHTML = favoriteAircraft.map(aircraft => 
+        createAircraftCard(aircraft).outerHTML
+      ).join('');
+    }
+
+    function toggleFavorite(aircraftId) {
+      if (!currentUser) {
+        authModal.classList.add('active');
+        return;
+      }
+      
+      const userFavs = userFavorites[currentUser.id] || [];
+      const index = userFavs.indexOf(aircraftId);
+      
+      if (index === -1) {
+        userFavs.push(aircraftId);
+        showNotification('已添加到收藏夹', 'success');
+      } else {
+        userFavs.splice(index, 1);
+        showNotification('已从收藏夹移除', 'info');
+      }
+      
+      userFavorites[currentUser.id] = userFavs;
+      localStorage.setItem('userFavorites', JSON.stringify(userFavorites));
+      
+      renderAircraftGrid();
+      if (favoritesSection.style.display === 'block') {
+        renderFavorites();
+      }
+    }
+
+    function showExport() {
+      exportSection.style.display = 'block';
+      exportSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function handleExport(format) {
+      if (!currentUser) {
+        authModal.classList.add('active');
+        return;
+      }
+      
+      let dataToExport = '';
+      const userFavs = userFavorites[currentUser.id] || [];
+      const favoriteAircraft = aircraftData.filter(aircraft => 
+        userFavs.includes(aircraft.id)
+      );
+      
+      switch (format) {
+        case 'pdf':
+          dataToExport = 'PDF导出功能准备中...';
+          break;
+        case 'excel':
+          dataToExport = 'Excel导出功能准备中...';
+          break;
+        case 'json':
+          dataToExport = JSON.stringify(favoriteAircraft, null, 2);
+          break;
+      }
+      
+      showNotification(`${format.toUpperCase()}导出功能已触发`, 'success');
+      console.log('导出数据:', dataToExport);
+    }
+
+    function renderAirlinesGrid() {
+      airlinesGrid.innerHTML = airlinesData.map(airline => `
+        <div class="airline-card animate-fadeIn">
+          <div class="airline-logo">${airline.code}</div>
+          <div class="airline-info">
+            <h4>${airline.name}</h4>
+            <p><strong>国家:</strong> ${airline.country}</p>
+            <p><strong>机队规模:</strong> ${airline.fleetSize} 架</p>
+            <p><strong>主要机型:</strong> ${airline.mainAircraft.slice(0, 3).join(', ')}</p>
+            <p><strong>成立时间:</strong> ${airline.founded}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showNotification(message, type = 'info') {
+      notification.textContent = message;
+      notification.className = `notification show`;
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // 加载保存的用户数据
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+      currentUser = JSON.parse(savedUser);
+      updateUserInterface();
     }
 
     // 加载保存的主题
