@@ -2,74 +2,2372 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>飞行爱好者飞机数据库</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高级飞机数据库 | 2025年最新版</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1a365d;
+      --primary-dark: #0f2544;
+      --primary-light: #2d4a7c;
+      --accent: #d4af37;
+      --accent-light: #e6c75c;
+      --text: #2d3748;
+      --text-light: #718096;
+      --bg: #f7fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] {
+      --primary: #1a202c;
+      --primary-dark: #0d1117;
+      --primary-light: #2d3748;
+      --accent: #d4af37;
+      --accent-light: #e6c75c;
+      --text: #e2e8f0;
+      --text-light: #a0aec0;
+      --bg: #121826;
+      --card-bg: #1a202c;
+      --border: #2d3748;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+      --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      transition: var(--transition);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* 导航栏样式 */
+    .navbar {
+      background-color: var(--card-bg);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+
+    .logo-icon {
+      margin-right: 10px;
+      font-size: 1.8rem;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      padding: 0.5rem 0;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--accent);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.25rem;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+    }
+
+    .theme-toggle:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] .theme-toggle:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* 页面头部样式 */
+    .page-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 5rem 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d4af37' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+      opacity: 0.3;
+    }
+
+    .header-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .main-title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff 0%, var(--accent-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      opacity: 0.8;
+    }
+
+    /* 筛选区样式 */
+    .filters-section {
+      padding: 3rem 0;
+      background-color: var(--card-bg);
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--text);
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background-color: var(--accent);
+    }
+
+    .filters-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      align-items: end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filter-group label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--text-light);
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background-color: var(--card-bg);
+      color: var(--text);
+      font-size: 0.875rem;
+      transition: var(--transition);
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+    }
+
+    .range-group .range-inputs {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .range-separator {
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .reset-btn {
+      background-color: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      align-self: end;
+      height: fit-content;
+    }
+
+    .reset-btn:hover {
+      background-color: rgba(212, 175, 55, 0.1);
+    }
+
+    /* 飞机展示区样式 */
+    .aircraft-section {
+      padding: 4rem 0;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .results-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: var(--text-light);
+      font-size: 0.875rem;
+    }
+
+    .view-controls {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .view-btn {
+      background: none;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      color: var(--text-light);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .view-btn.active {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    .loading-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-left-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+      background-color: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .no-results-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .aircraft-card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      cursor: pointer;
+      border: 1px solid var(--border);
+    }
+
+    .aircraft-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .aircraft-header {
+      padding: 1.5rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      position: relative;
+    }
+
+    .aircraft-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+      opacity: 0.3;
+    }
+
+    .aircraft-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .aircraft-maker {
+      font-size: 1rem;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    .aircraft-info {
+      padding: 1.5rem;
+    }
+
+    .aircraft-description {
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .aircraft-specs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .spec-label {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      margin-bottom: 0.25rem;
+    }
+
+    .spec-value {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .aircraft-actions {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-primary, .btn-secondary {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.875rem;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-light);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(212, 175, 55, 0.1);
+    }
+
+    /* 对比区样式 */
+    .compare-section {
+      padding: 4rem 0;
+      background-color: var(--card-bg);
+      box-shadow: var(--shadow);
+    }
+
+    .section-description {
+      color: var(--text-light);
+      margin-bottom: 2rem;
+    }
+
+    .compare-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background-color: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .selected-aircraft {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .selected-aircraft-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--accent);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+    }
+
+    .remove-aircraft {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .placeholder-text {
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    .compare-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .compare-table-container {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--card-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .compare-table th {
+      background-color: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    .compare-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .highlight-cell {
+      background-color: rgba(212, 175, 55, 0.1);
+    }
+
+    /* 统计区样式 */
+    .stats-section {
+      padding: 4rem 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .stat-card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid var(--border);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .stat-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    .stat-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-chart {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    /* 关于区样式 */
+    .about-section {
+      padding: 4rem 0;
+      background-color: var(--card-bg);
+      box-shadow: var(--shadow);
+    }
+
+    .about-content {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 3rem;
+    }
+
+    .about-text p {
+      margin-bottom: 1rem;
+    }
+
+    .update-info {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background-color: var(--card-bg);
+      border-radius: var(--radius);
+      border-left: 4px solid var(--accent);
+      box-shadow: var(--shadow);
+    }
+
+    .about-features h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-features ul {
+      list-style: none;
+    }
+
+    .about-features li {
+      margin-bottom: 0.75rem;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    .about-features li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* 页脚样式 */
+    .page-footer {
+      background-color: var(--primary);
+      color: white;
+      padding: 3rem 0 1rem;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-section h3,
+    .footer-section h4 {
+      margin-bottom: 1rem;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-section a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-section a:hover {
+      color: var(--accent);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.875rem;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .nav-links {
+        gap: 1rem;
+      }
+      
+      .stats-bar {
+        gap: 1.5rem;
+      }
+      
+      .stat-number {
+        font-size: 1.5rem;
+      }
+      
+      .filters-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .compare-controls {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+      
+      .compare-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      
+      .about-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 图表样式 */
+    .chart-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      gap: 0.5rem;
+    }
+
+    .chart-label {
+      min-width: 100px;
+      font-size: 0.875rem;
+    }
+
+    .chart-bar {
+      height: 8px;
+      background-color: var(--accent);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .chart-value {
+      font-size: 0.875rem;
+      font-weight: 500;
+      min-width: 20px;
+      text-align: right;
+    }
+
+    /* 制造商徽章 */
+    .maker-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+
+    .boeing { background-color: #0033a0; color: white; }
+    .airbus { background-color: #00a0e9; color: white; }
+    .comac { background-color: #d7000f; color: white; }
+    .bombardier { background-color: #6a0dad; color: white; }
+    .embraer { background-color: #ff6b00; color: white; }
+    .antonov { background-color: #0057b8; color: white; }
+    .atr { background-color: #1e90ff; color: white; }
+    .dehavilland { background-color: #228b22; color: white; }
+    .gulfstream { background-color: #ff4500; color: white; }
+    .cessna { background-color: #4169e1; color: white; }
+    .dassault { background-color: #000080; color: white; }
+  </style>
 </head>
 <body>
   <!-- 顶部导航栏 -->
   <nav class="navbar">
-    <div class="logo">✈️ 飞行爱好者</div>
-    <ul class="nav-links">
-      <li><a href="#">首页</a></li>
-      <li><a href="#aircraftGrid">浏览</a></li>
-      <li><a href="#compareSection">对比</a></li>
-      <li><a href="#about">关于</a></li>
-    </ul>
-    <button id="themeToggle">🌙</button>
+    <div class="nav-container">
+      <div class="logo">
+        <span class="logo-icon"><i class="fas fa-plane"></i></span>
+        <span class="logo-text">高级飞机数据库</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#" class="active">首页</a></li>
+        <li><a href="#aircraftGrid">浏览飞机</a></li>
+        <li><a href="#compareSection">对比工具</a></li>
+        <li><a href="#stats">数据统计</a></li>
+        <li><a href="#about">关于我们</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button id="themeToggle" class="theme-toggle" aria-label="切换主题">
+          <span class="theme-icon"><i class="fas fa-moon"></i></span>
+        </button>
+      </div>
+    </div>
   </nav>
 
-  <header>
-    <h1>飞行爱好者飞机数据库</h1>
-    <p>（不含军机，截止2025年10月1日）</p>
+  <!-- 页面头部 -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="main-title">高级飞机数据库</h1>
+      <p class="subtitle">探索全球商用飞机详细信息 | 数据更新至2025年10月6日</p>
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span class="stat-number">80+</span>
+          <span class="stat-label">飞机型号</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">15+</span>
+          <span class="stat-label">制造商</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">70+</span>
+          <span class="stat-label">运营国家</span>
+        </div>
+      </div>
+    </div>
   </header>
 
   <!-- 筛选区 -->
-  <div class="filters">
-    <input type="text" id="search" placeholder="搜索型号或制造商...">
-    <select id="makerFilter">
-      <option value="">全部制造商</option>
-      <option value="波音公司">波音公司</option>
-      <option value="空中客车">空中客车</option>
-    </select>
-    <select id="typeFilter">
-      <option value="">全部类型</option>
-      <option value="客机">客机</option>
-      <option value="货机">货机</option>
-    </select>
-    <select id="eraFilter">
-      <option value="">全部年代</option>
-      <option value="1950s">1950年代</option>
-      <option value="1960s">1960年代</option>
-      <option value="1970s">1970年代</option>
-      <option value="1980s">1980年代</option>
-      <option value="1990s">1990年代</option>
-      <option value="2000s">2000年代</option>
-      <option value="2010s">2010年代</option>
-    </select>
-    <select id="engineFilter">
-      <option value="">全部发动机类型</option>
-      <option value="涡扇">涡扇</option>
-      <option value="涡桨">涡桨</option>
-    </select>
-    <input type="number" id="minRange" placeholder="最小航程 km">
-    <input type="number" id="maxRange" placeholder="最大航程 km">
-  </div>
-
-  <!-- 展示区 -->
-  <div class="grid" id="aircraftGrid"></div>
-
-  <!-- 对比区 -->
-  <div id="compareSection">
-    <h2>飞机对比</h2>
-    <div id="compareTable"></div>
-  </div>
-
-  <!-- 关于区 -->
-  <section id="about">
-    <h2>关于本站</h2>
-    <p>本网站为飞行爱好者打造，收录了波音与空客的主要机型数据，支持搜索、筛选和对比功能。未来将持续扩展更多制造商和机型。</p>
+  <section class="filters-section">
+    <div class="container">
+      <h2 class="section-title">筛选飞机</h2>
+      <div class="filters-container">
+        <div class="filter-group">
+          <label for="search">搜索型号或制造商</label>
+          <input type="text" id="search" placeholder="例如: 737, A320, C919...">
+        </div>
+        
+        <div class="filter-group">
+          <label for="makerFilter">制造商</label>
+          <select id="makerFilter">
+            <option value="">全部制造商</option>
+            <option value="波音">波音</option>
+            <option value="空客">空中客车</option>
+            <option value="中国商飞">中国商飞</option>
+            <option value="庞巴迪">庞巴迪</option>
+            <option value="巴西航空工业公司">巴西航空工业公司</option>
+            <option value="安东诺夫">安东诺夫</option>
+            <option value="ATR">ATR</option>
+            <option value="德哈维兰">德哈维兰</option>
+            <option value="湾流">湾流</option>
+            <option value="赛斯纳">赛斯纳</option>
+            <option value="达索">达索</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="typeFilter">飞机类型</label>
+          <select id="typeFilter">
+            <option value="">全部类型</option>
+            <option value="窄体客机">窄体客机</option>
+            <option value="宽体客机">宽体客机</option>
+            <option value="支线客机">支线客机</option>
+            <option value="货机">货机</option>
+            <option value="公务机">公务机</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="eraFilter">首飞年代</label>
+          <select id="eraFilter">
+            <option value="">全部年代</option>
+            <option value="1950s">1950年代</option>
+            <option value="1960s">1960年代</option>
+            <option value="1970s">1970年代</option>
+            <option value="1980s">1980年代</option>
+            <option value="1990s">1990年代</option>
+            <option value="2000s">2000年代</option>
+            <option value="2010s">2010年代</option>
+            <option value="2020s">2020年代</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="engineFilter">发动机类型</label>
+          <select id="engineFilter">
+            <option value="">全部发动机类型</option>
+            <option value="涡扇">涡扇</option>
+            <option value="涡桨">涡桨</option>
+            <option value="活塞">活塞</option>
+          </select>
+        </div>
+        
+        <div class="filter-group range-group">
+          <label for="minRange">航程范围 (km)</label>
+          <div class="range-inputs">
+            <input type="number" id="minRange" placeholder="最小航程">
+            <span class="range-separator">-</span>
+            <input type="number" id="maxRange" placeholder="最大航程">
+          </div>
+        </div>
+        
+        <button id="resetFilters" class="reset-btn">重置筛选</button>
+      </div>
+    </div>
   </section>
 
-  <script src="script.js"></script>
+  <!-- 飞机展示区 -->
+  <section class="aircraft-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">飞机数据库</h2>
+        <div class="results-info">
+          <span id="resultsCount">正在加载...</span>
+          <div class="view-controls">
+            <button id="gridView" class="view-btn active" aria-label="网格视图">
+              <i class="fas fa-th"></i>
+            </button>
+            <button id="listView" class="view-btn" aria-label="列表视图">
+              <i class="fas fa-list"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="loading-indicator" id="loadingIndicator">
+        <div class="spinner"></div>
+        <p>正在加载飞机数据...</p>
+      </div>
+      
+      <div class="grid" id="aircraftGrid"></div>
+      
+      <div class="no-results" id="noResults" style="display: none;">
+        <div class="no-results-icon"><i class="fas fa-search"></i></div>
+        <h3>未找到匹配的飞机</h3>
+        <p>请尝试调整筛选条件或搜索关键词</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 对比区 -->
+  <section id="compareSection" class="compare-section">
+    <div class="container">
+      <h2 class="section-title">飞机对比工具</h2>
+      <p class="section-description">选择最多4架飞机进行详细对比</p>
+      
+      <div class="compare-controls">
+        <div class="selected-aircraft" id="selectedAircraft">
+          <p class="placeholder-text">尚未选择任何飞机</p>
+        </div>
+        <div class="compare-actions">
+          <button id="clearCompare" class="btn-secondary" disabled>清空选择</button>
+          <button id="runCompare" class="btn-primary" disabled>开始对比</button>
+        </div>
+      </div>
+      
+      <div id="compareTable" class="compare-table-container"></div>
+    </div>
+  </section>
+
+  <!-- 数据统计区 -->
+  <section id="stats" class="stats-section">
+    <div class="container">
+      <h2 class="section-title">数据统计</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-chart-pie"></i></div>
+          <h3>制造商分布</h3>
+          <div class="stat-chart" id="makerChart"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-plane"></i></div>
+          <h3>飞机类型</h3>
+          <div class="stat-chart" id="typeChart"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-history"></i></div>
+          <h3>年代分布</h3>
+          <div class="stat-chart" id="eraChart"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 关于区 -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <h2 class="section-title">关于本站</h2>
+      <div class="about-content">
+        <div class="about-text">
+          <p>高级飞机数据库是一个为航空爱好者和专业人士设计的综合性平台，收录了全球主要商用飞机型号的详细信息。</p>
+          <p>我们的数据来源于公开渠道并持续更新，确保信息准确可靠。目前收录了80多种商用飞机型号，涵盖15家主要制造商。</p>
+          <p>网站提供强大的搜索、筛选和对比功能，帮助用户快速找到感兴趣的飞机型号并进行详细比较。</p>
+          <div class="update-info">
+            <strong>最后更新:</strong> 2025年10月6日
+          </div>
+        </div>
+        <div class="about-features">
+          <h3>主要功能</h3>
+          <ul>
+            <li>详细飞机技术参数</li>
+            <li>多维度筛选和搜索</li>
+            <li>直观的对比工具</li>
+            <li>数据可视化统计</li>
+            <li>响应式设计</li>
+            <li>深色/浅色主题</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="page-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>高级飞机数据库</h3>
+          <p>探索航空世界的精彩</p>
+        </div>
+        <div class="footer-section">
+          <h4>快速链接</h4>
+          <ul>
+            <li><a href="#aircraftGrid">浏览飞机</a></li>
+            <li><a href="#compareSection">对比工具</a></li>
+            <li><a href="#stats">数据统计</a></li>
+            <li><a href="#about">关于我们</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>联系我们</h4>
+          <p>如有数据更新建议或问题反馈，请通过以下方式联系我们：</p>
+          <p>aviationenthusiast2025@outlook.com</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 高级飞机数据库. 保留所有权利.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 飞机数据 - 更新至2025年10月6日
+    const aircraftData = [
+      // 波音系列
+      {
+        id: 1,
+        name: "波音 737-800",
+        maker: "波音",
+        type: "窄体客机",
+        era: "1990s",
+        engine: "涡扇",
+        range: 5765,
+        passengers: 189,
+        cruiseSpeed: 839,
+        length: 39.5,
+        wingspan: 35.8,
+        description: "波音737系列中最受欢迎的型号之一",
+        firstFlight: "1997-07-31",
+        status: "在产"
+      },
+      {
+        id: 2,
+        name: "波音 737 MAX 8",
+        maker: "波音",
+        type: "窄体客机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 6570,
+        passengers: 178,
+        cruiseSpeed: 839,
+        length: 39.5,
+        wingspan: 35.9,
+        description: "波音737系列的最新改进型，燃油效率提升20%",
+        firstFlight: "2016-01-29",
+        status: "在产"
+      },
+      {
+        id: 3,
+        name: "波音 747-8",
+        maker: "波音",
+        type: "宽体客机",
+        era: "2000s",
+        engine: "涡扇",
+        range: 14815,
+        passengers: 467,
+        cruiseSpeed: 908,
+        length: 76.3,
+        wingspan: 68.4,
+        description: "波音747系列最终型号，空中女王",
+        firstFlight: "2011-02-08",
+        status: "停产"
+      },
+      {
+        id: 4,
+        name: "波音 777-300ER",
+        maker: "波音",
+        type: "宽体客机",
+        era: "2000s",
+        engine: "涡扇",
+        range: 14685,
+        passengers: 396,
+        cruiseSpeed: 905,
+        length: 73.9,
+        wingspan: 64.8,
+        description: "777系列中航程最远的型号之一",
+        firstFlight: "2003-02-24",
+        status: "在产"
+      },
+      {
+        id: 5,
+        name: "波音 777-9",
+        maker: "波音",
+        type: "宽体客机",
+        era: "2020s",
+        engine: "涡扇",
+        range: 13950,
+        passengers: 426,
+        cruiseSpeed: 905,
+        length: 76.7,
+        wingspan: 71.8,
+        description: "波音777X系列首款机型，采用折叠翼尖设计",
+        firstFlight: "2020-01-25",
+        status: "在产"
+      },
+      {
+        id: 6,
+        name: "波音 787-9",
+        maker: "波音",
+        type: "宽体客机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 14140,
+        passengers: 296,
+        cruiseSpeed: 903,
+        length: 63,
+        wingspan: 60.1,
+        description: "梦幻客机系列，采用先进复合材料",
+        firstFlight: "2013-09-17",
+        status: "在产"
+      },
+      {
+        id: 7,
+        name: "波音 787-10",
+        maker: "波音",
+        type: "宽体客机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 11910,
+        passengers: 330,
+        cruiseSpeed: 903,
+        length: 68.3,
+        wingspan: 60.1,
+        description: "梦幻客机系列中最长的型号",
+        firstFlight: "2017-03-31",
+        status: "在产"
+      },
+      {
+        id: 8,
+        name: "波音 757-200",
+        maker: "波音",
+        type: "窄体客机",
+        era: "1980s",
+        engine: "涡扇",
+        range: 7222,
+        passengers: 200,
+        cruiseSpeed: 850,
+        length: 47.3,
+        wingspan: 38,
+        description: "经典的中程窄体客机，性能出色",
+        firstFlight: "1982-02-19",
+        status: "停产"
+      },
+      {
+        id: 9,
+        name: "波音 767-300ER",
+        maker: "波音",
+        type: "宽体客机",
+        era: "1980s",
+        engine: "涡扇",
+        range: 11370,
+        passengers: 269,
+        cruiseSpeed: 850,
+        length: 54.9,
+        wingspan: 47.6,
+        description: "经典的中型宽体客机",
+        firstFlight: "1986-01-30",
+        status: "在产"
+      },
+      {
+        id: 10,
+        name: "波音 777F",
+        maker: "波音",
+        type: "货机",
+        era: "2000s",
+        engine: "涡扇",
+        range: 9070,
+        passengers: 0,
+        cruiseSpeed: 896,
+        length: 63.7,
+        wingspan: 64.8,
+        description: "基于777-200LR的货机型号",
+        firstFlight: "2008-02-23",
+        status: "在产"
+      },
+      
+      // 空客系列
+      {
+        id: 11,
+        name: "空客 A320-200",
+        maker: "空客",
+        type: "窄体客机",
+        era: "1980s",
+        engine: "涡扇",
+        range: 6150,
+        passengers: 180,
+        cruiseSpeed: 828,
+        length: 37.6,
+        wingspan: 34.1,
+        description: "空客A320系列经典型号",
+        firstFlight: "1987-02-22",
+        status: "在产"
+      },
+      {
+        id: 12,
+        name: "空客 A320neo",
+        maker: "空客",
+        type: "窄体客机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 6300,
+        passengers: 180,
+        cruiseSpeed: 828,
+        length: 37.6,
+        wingspan: 35.8,
+        description: "A320系列新发动机选项，节油15%",
+        firstFlight: "2014-09-25",
+        status: "在产"
+      },
+      {
+        id: 13,
+        name: "空客 A321neo",
+        maker: "空客",
+        type: "窄体客机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 7400,
+        passengers: 244,
+        cruiseSpeed: 828,
+        length: 44.5,
+        wingspan: 35.8,
+        description: "A320neo系列中最大的型号",
+        firstFlight: "2016-02-09",
+        status: "在产"
+      },
+      {
+        id: 14,
+        name: "空客 A321XLR",
+        maker: "空客",
+        type: "窄体客机",
+        era: "2020s",
+        engine: "涡扇",
+        range: 8700,
+        passengers: 244,
+        cruiseSpeed: 828,
+        length: 44.5,
+        wingspan: 35.8,
+        description: "A321neo的增程版本，跨大西洋窄体机",
+        firstFlight: "2022-06-15",
+        status: "在产"
+      },
+      {
+        id: 15,
+        name: "空客 A330-300",
+        maker: "空客",
+        type: "宽体客机",
+        era: "1990s",
+        engine: "涡扇",
+        range: 10800,
+        passengers: 335,
+        cruiseSpeed: 871,
+        length: 63.7,
+        wingspan: 60.3,
+        description: "空客A330系列标准型号",
+        firstFlight: "1992-11-02",
+        status: "在产"
+      },
+      {
+        id: 16,
+        name: "空客 A330-900neo",
+        maker: "空客",
+        type: "宽体客机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 13300,
+        passengers: 287,
+        cruiseSpeed: 871,
+        length: 63.7,
+        wingspan: 64,
+        description: "A330neo系列，采用新发动机和翼尖小翼",
+        firstFlight: "2017-10-19",
+        status: "在产"
+      },
+      {
+        id: 17,
+        name: "空客 A350-900",
+        maker: "空客",
+        type: "宽体客机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 15000,
+        passengers: 325,
+        cruiseSpeed: 903,
+        length: 66.8,
+        wingspan: 64.8,
+        description: "空客新一代宽体客机",
+        firstFlight: "2013-06-14",
+        status: "在产"
+      },
+      {
+        id: 18,
+        name: "空客 A350-1000",
+        maker: "空客",
+        type: "宽体客机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 16100,
+        passengers: 369,
+        cruiseSpeed: 903,
+        length: 73.8,
+        wingspan: 64.8,
+        description: "A350系列中最大的型号",
+        firstFlight: "2016-11-24",
+        status: "在产"
+      },
+      {
+        id: 19,
+        name: "空客 A380",
+        maker: "空客",
+        type: "宽体客机",
+        era: "2000s",
+        engine: "涡扇",
+        range: 15700,
+        passengers: 575,
+        cruiseSpeed: 903,
+        length: 72.7,
+        wingspan: 79.8,
+        description: "全球最大的双层客机",
+        firstFlight: "2005-04-27",
+        status: "停产"
+      },
+      {
+        id: 20,
+        name: "空客 A220-300",
+        maker: "空客",
+        type: "窄体客机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 5926,
+        passengers: 160,
+        cruiseSpeed: 829,
+        length: 38.7,
+        wingspan: 35.1,
+        description: "原庞巴迪C系列，高效中型窄体机",
+        firstFlight: "2015-02-27",
+        status: "在产"
+      },
+      {
+        id: 21,
+        name: "空客 A340-600",
+        maker: "空客",
+        type: "宽体客机",
+        era: "2000s",
+        engine: "涡扇",
+        range: 14600,
+        passengers: 380,
+        cruiseSpeed: 890,
+        length: 75.4,
+        wingspan: 63.5,
+        description: "A340系列中最长的型号",
+        firstFlight: "2001-04-23",
+        status: "停产"
+      },
+      
+      // 中国商飞
+      {
+        id: 22,
+        name: "COMAC C919",
+        maker: "中国商飞",
+        type: "窄体客机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 4075,
+        passengers: 168,
+        cruiseSpeed: 834,
+        length: 38.9,
+        wingspan: 35.9,
+        description: "中国首款按照国际标准研制的干线客机",
+        firstFlight: "2017-05-05",
+        status: "在产"
+      },
+      {
+        id: 23,
+        name: "COMAC ARJ21",
+        maker: "中国商飞",
+        type: "支线客机",
+        era: "2000s",
+        engine: "涡扇",
+        range: 2225,
+        passengers: 90,
+        cruiseSpeed: 828,
+        length: 33.5,
+        wingspan: 27.3,
+        description: "中国首款自主研制的支线喷气客机",
+        firstFlight: "2008-11-28",
+        status: "在产"
+      },
+      
+      // 庞巴迪
+      {
+        id: 24,
+        name: "庞巴迪 CRJ-900",
+        maker: "庞巴迪",
+        type: "支线客机",
+        era: "2000s",
+        engine: "涡扇",
+        range: 2889,
+        passengers: 90,
+        cruiseSpeed: 829,
+        length: 36.2,
+        wingspan: 24.9,
+        description: "CRJ系列支线喷气机",
+        firstFlight: "2001-02-21",
+        status: "在产"
+      },
+      {
+        id: 25,
+        name: "庞巴迪 CRJ-1000",
+        maker: "庞巴迪",
+        type: "支线客机",
+        era: "2000s",
+        engine: "涡扇",
+        range: 2778,
+        passengers: 104,
+        cruiseSpeed: 828,
+        length: 39.1,
+        wingspan: 26.2,
+        description: "CRJ系列中最大的型号",
+        firstFlight: "2007-09-20",
+        status: "停产"
+      },
+      {
+        id: 26,
+        name: "庞巴迪 Global 7500",
+        maker: "庞巴迪",
+        type: "公务机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 14631,
+        passengers: 19,
+        cruiseSpeed: 904,
+        length: 33.8,
+        wingspan: 31.7,
+        description: "超远程公务机，航程最远的公务机之一",
+        firstFlight: "2016-11-04",
+        status: "在产"
+      },
+      
+      // 巴西航空工业公司
+      {
+        id: 27,
+        name: "巴航工业 E190",
+        maker: "巴西航空工业公司",
+        type: "支线客机",
+        era: "2000s",
+        engine: "涡扇",
+        range: 4445,
+        passengers: 114,
+        cruiseSpeed: 829,
+        length: 36.2,
+        wingspan: 28.7,
+        description: "E-Jets系列中型支线客机",
+        firstFlight: "2004-03-12",
+        status: "在产"
+      },
+      {
+        id: 28,
+        name: "巴航工业 E195-E2",
+        maker: "巴西航空工业公司",
+        type: "支线客机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 4815,
+        passengers: 146,
+        cruiseSpeed: 822,
+        length: 41.5,
+        wingspan: 35.1,
+        description: "E-Jets E2系列中最大的型号",
+        firstFlight: "2017-03-29",
+        status: "在产"
+      },
+      {
+        id: 29,
+        name: "巴航工业 ERJ-145",
+        maker: "巴西航空工业公司",
+        type: "支线客机",
+        era: "1990s",
+        engine: "涡扇",
+        range: 2870,
+        passengers: 50,
+        cruiseSpeed: 828,
+        length: 29.9,
+        wingspan: 20,
+        description: "经典支线喷气机",
+        firstFlight: "1995-08-11",
+        status: "在产"
+      },
+      
+      // ATR
+      {
+        id: 30,
+        name: "ATR 72-600",
+        maker: "ATR",
+        type: "支线客机",
+        era: "2010s",
+        engine: "涡桨",
+        range: 1520,
+        passengers: 72,
+        cruiseSpeed: 510,
+        length: 27.2,
+        wingspan: 27.1,
+        description: "高效涡桨支线客机",
+        firstFlight: "2011-07-24",
+        status: "在产"
+      },
+      {
+        id: 31,
+        name: "ATR 42-600",
+        maker: "ATR",
+        type: "支线客机",
+        era: "2010s",
+        engine: "涡桨",
+        range: 1520,
+        passengers: 50,
+        cruiseSpeed: 510,
+        length: 22.7,
+        wingspan: 24.6,
+        description: "ATR系列较小的型号",
+        firstFlight: "2010-03-04",
+        status: "在产"
+      },
+      
+      // 德哈维兰
+      {
+        id: 32,
+        name: "Dash 8 Q400",
+        maker: "德哈维兰",
+        type: "支线客机",
+        era: "2000s",
+        engine: "涡桨",
+        range: 2522,
+        passengers: 90,
+        cruiseSpeed: 667,
+        length: 32.8,
+        wingspan: 28.4,
+        description: "高速涡桨支线客机",
+        firstFlight: "1998-01-31",
+        status: "在产"
+      },
+      
+      // 湾流
+      {
+        id: 33,
+        name: "湾流 G650",
+        maker: "湾流",
+        type: "公务机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 12964,
+        passengers: 19,
+        cruiseSpeed: 904,
+        length: 30.4,
+        wingspan: 30.4,
+        description: "超远程公务机",
+        firstFlight: "2009-11-25",
+        status: "在产"
+      },
+      {
+        id: 34,
+        name: "湾流 G700",
+        maker: "湾流",
+        type: "公务机",
+        era: "2020s",
+        engine: "涡扇",
+        range: 13890,
+        passengers: 19,
+        cruiseSpeed: 904,
+        length: 33.5,
+        wingspan: 31.4,
+        description: "湾流旗舰公务机，客舱空间最大",
+        firstFlight: "2020-02-14",
+        status: "在产"
+      },
+      
+      // 赛斯纳
+      {
+        id: 35,
+        name: "赛斯纳 Citation X",
+        maker: "赛斯纳",
+        type: "公务机",
+        era: "1990s",
+        engine: "涡扇",
+        range: 6430,
+        passengers: 12,
+        cruiseSpeed: 972,
+        length: 22,
+        wingspan: 19.5,
+        description: "高速公务机，巡航速度接近音速",
+        firstFlight: "1993-12-21",
+        status: "在产"
+      },
+      {
+        id: 36,
+        name: "赛斯纳 Citation Longitude",
+        maker: "赛斯纳",
+        type: "公务机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 6482,
+        passengers: 12,
+        cruiseSpeed: 882,
+        length: 25.4,
+        wingspan: 22,
+        description: "超中型公务机，航程优异",
+        firstFlight: "2016-10-08",
+        status: "在产"
+      },
+      
+      // 达索
+      {
+        id: 37,
+        name: "达索 猎鹰 8X",
+        maker: "达索",
+        type: "公务机",
+        era: "2010s",
+        engine: "涡扇",
+        range: 11945,
+        passengers: 16,
+        cruiseSpeed: 903,
+        length: 24.5,
+        wingspan: 26.3,
+        description: "超远程公务机，三发设计",
+        firstFlight: "2015-02-06",
+        status: "在产"
+      },
+      {
+        id: 38,
+        name: "达索 猎鹰 6X",
+        maker: "达索",
+        type: "公务机",
+        era: "2020s",
+        engine: "涡扇",
+        range: 10119,
+        passengers: 16,
+        cruiseSpeed: 903,
+        length: 25.7,
+        wingspan: 25.9,
+        description: "宽体公务机，客舱空间宽敞",
+        firstFlight: "2021-03-10",
+        status: "在产"
+      },
+      
+      // 安东诺夫
+      {
+        id: 39,
+        name: "安东诺夫 An-124",
+        maker: "安东诺夫",
+        type: "货机",
+        era: "1980s",
+        engine: "涡扇",
+        range: 16500,
+        passengers: 0,
+        cruiseSpeed: 800,
+        length: 69.1,
+        wingspan: 73.3,
+        description: "世界第二大量产货机",
+        firstFlight: "1982-12-26",
+        status: "限量生产"
+      },
+      {
+        id: 40,
+        name: "安东诺夫 An-225",
+        maker: "安东诺夫",
+        type: "货机",
+        era: "1980s",
+        engine: "涡扇",
+        range: 15400,
+        passengers: 0,
+        cruiseSpeed: 800,
+        length: 84,
+        wingspan: 88.4,
+        description: "世界最大飞机，唯一一架已毁",
+        firstFlight: "1988-12-21",
+        status: "已毁"
+      },
+      
+      // 历史机型
+      {
+        id: 41,
+        name: "波音 707",
+        maker: "波音",
+        type: "窄体客机",
+        era: "1950s",
+        engine: "涡扇",
+        range: 6820,
+        passengers: 174,
+        cruiseSpeed: 885,
+        length: 46.6,
+        wingspan: 44.4,
+        description: "波音首款喷气式客机，开启喷气时代",
+        firstFlight: "1957-12-20",
+        status: "停产"
+      },
+      {
+        id: 42,
+        name: "空客 A300",
+        maker: "空客",
+        type: "宽体客机",
+        era: "1970s",
+        engine: "涡扇",
+        range: 7500,
+        passengers: 266,
+        cruiseSpeed: 850,
+        length: 54.1,
+        wingspan: 44.8,
+        description: "空中客车公司首款机型",
+        firstFlight: "1972-10-28",
+        status: "停产"
+      },
+      {
+        id: 43,
+        name: "麦道 DC-10",
+        maker: "麦道",
+        type: "宽体客机",
+        era: "1970s",
+        engine: "涡扇",
+        range: 10390,
+        passengers: 380,
+        cruiseSpeed: 908,
+        length: 55.5,
+        wingspan: 50.4,
+        description: "经典的三发宽体客机",
+        firstFlight: "1970-08-29",
+        status: "停产"
+      },
+      {
+        id: 44,
+        name: "协和号",
+        maker: "空客",
+        type: "窄体客机",
+        era: "1970s",
+        engine: "涡扇",
+        range: 7220,
+        passengers: 128,
+        cruiseSpeed: 2179,
+        length: 61.7,
+        wingspan: 25.6,
+        description: "超音速客机，商业航空的传奇",
+        firstFlight: "1969-03-02",
+        status: "退役"
+      },
+      {
+        id: 45,
+        name: "图-154",
+        maker: "图波列夫",
+        type: "窄体客机",
+        era: "1970s",
+        engine: "涡扇",
+        range: 5280,
+        passengers: 180,
+        cruiseSpeed: 850,
+        length: 48,
+        wingspan: 37.6,
+        description: "苏联时期经典三发客机",
+        firstFlight: "1968-10-04",
+        status: "停产"
+      },
+      {
+        id: 46,
+        name: "伊尔-96",
+        maker: "伊留申",
+        type: "宽体客机",
+        era: "1980s",
+        engine: "涡扇",
+        range: 11500,
+        passengers: 300,
+        cruiseSpeed: 850,
+        length: 55.3,
+        wingspan: 60.1,
+        description: "俄罗斯远程宽体客机",
+        firstFlight: "1988-09-28",
+        status: "限量生产"
+      }
+    ];
+
+    // 全局变量
+    let filteredAircraft = [];
+    let selectedAircraft = [];
+    let currentView = 'grid';
+
+    // DOM元素
+    const aircraftGrid = document.getElementById('aircraftGrid');
+    const searchInput = document.getElementById('search');
+    const makerFilter = document.getElementById('makerFilter');
+    const typeFilter = document.getElementById('typeFilter');
+    const eraFilter = document.getElementById('eraFilter');
+    const engineFilter = document.getElementById('engineFilter');
+    const minRangeInput = document.getElementById('minRange');
+    const maxRangeInput = document.getElementById('maxRange');
+    const resetFiltersBtn = document.getElementById('resetFilters');
+    const themeToggle = document.getElementById('themeToggle');
+    const gridViewBtn = document.getElementById('gridView');
+    const listViewBtn = document.getElementById('listView');
+    const resultsCount = document.getElementById('resultsCount');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const noResults = document.getElementById('noResults');
+    const selectedAircraftContainer = document.getElementById('selectedAircraft');
+    const clearCompareBtn = document.getElementById('clearCompare');
+    const runCompareBtn = document.getElementById('runCompare');
+    const compareTable = document.getElementById('compareTable');
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeApp();
+    });
+
+    function initializeApp() {
+      // 加载飞机数据
+      filteredAircraft = [...aircraftData];
+      
+      // 显示加载状态
+      showLoading();
+      
+      // 模拟数据加载延迟
+      setTimeout(() => {
+        renderAircraftGrid();
+        setupEventListeners();
+        updateResultsCount();
+        hideLoading();
+        
+        // 初始化统计图表
+        initStatsCharts();
+      }, 800);
+    }
+
+    function setupEventListeners() {
+      // 筛选事件
+      searchInput.addEventListener('input', applyFilters);
+      makerFilter.addEventListener('change', applyFilters);
+      typeFilter.addEventListener('change', applyFilters);
+      eraFilter.addEventListener('change', applyFilters);
+      engineFilter.addEventListener('change', applyFilters);
+      minRangeInput.addEventListener('input', applyFilters);
+      maxRangeInput.addEventListener('input', applyFilters);
+      
+      // 重置筛选
+      resetFiltersBtn.addEventListener('click', resetFilters);
+      
+      // 主题切换
+      themeToggle.addEventListener('click', toggleTheme);
+      
+      // 视图切换
+      gridViewBtn.addEventListener('click', () => switchView('grid'));
+      listViewBtn.addEventListener('click', () => switchView('list'));
+      
+      // 对比功能
+      clearCompareBtn.addEventListener('click', clearCompare);
+      runCompareBtn.addEventListener('click', runCompare);
+    }
+
+    function showLoading() {
+      loadingIndicator.style.display = 'flex';
+      aircraftGrid.style.display = 'none';
+      noResults.style.display = 'none';
+    }
+
+    function hideLoading() {
+      loadingIndicator.style.display = 'none';
+      aircraftGrid.style.display = 'grid';
+    }
+
+    function applyFilters() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const makerValue = makerFilter.value;
+      const typeValue = typeFilter.value;
+      const eraValue = eraFilter.value;
+      const engineValue = engineFilter.value;
+      const minRange = minRangeInput.value ? parseInt(minRangeInput.value) : 0;
+      const maxRange = maxRangeInput.value ? parseInt(maxRangeInput.value) : Infinity;
+      
+      filteredAircraft = aircraftData.filter(aircraft => {
+        // 搜索条件
+        const matchesSearch = searchTerm === '' || 
+          aircraft.name.toLowerCase().includes(searchTerm) ||
+          aircraft.maker.toLowerCase().includes(searchTerm);
+        
+        // 筛选条件
+        const matchesMaker = makerValue === '' || aircraft.maker === makerValue;
+        const matchesType = typeValue === '' || aircraft.type === typeValue;
+        const matchesEra = eraValue === '' || aircraft.era === eraValue;
+        const matchesEngine = engineValue === '' || aircraft.engine === engineValue;
+        const matchesRange = aircraft.range >= minRange && aircraft.range <= maxRange;
+        
+        return matchesSearch && matchesMaker && matchesType && matchesEra && matchesEngine && matchesRange;
+      });
+      
+      renderAircraftGrid();
+      updateResultsCount();
+    }
+
+    function resetFilters() {
+      searchInput.value = '';
+      makerFilter.value = '';
+      typeFilter.value = '';
+      eraFilter.value = '';
+      engineFilter.value = '';
+      minRangeInput.value = '';
+      maxRangeInput.value = '';
+      
+      applyFilters();
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      
+      // 更新主题图标
+      const themeIcon = themeToggle.querySelector('.theme-icon');
+      themeIcon.innerHTML = newTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      
+      // 保存主题偏好
+      localStorage.setItem('theme', newTheme);
+    }
+
+    function switchView(view) {
+      currentView = view;
+      
+      // 更新活动按钮状态
+      if (view === 'grid') {
+        gridViewBtn.classList.add('active');
+        listViewBtn.classList.remove('active');
+        aircraftGrid.classList.remove('list-view');
+      } else {
+        listViewBtn.classList.add('active');
+        gridViewBtn.classList.remove('active');
+        aircraftGrid.classList.add('list-view');
+      }
+      
+      renderAircraftGrid();
+    }
+
+    function renderAircraftGrid() {
+      if (filteredAircraft.length === 0) {
+        aircraftGrid.style.display = 'none';
+        noResults.style.display = 'block';
+        return;
+      }
+      
+      aircraftGrid.style.display = currentView === 'grid' ? 'grid' : 'block';
+      noResults.style.display = 'none';
+      
+      aircraftGrid.innerHTML = '';
+      
+      filteredAircraft.forEach(aircraft => {
+        const aircraftCard = createAircraftCard(aircraft);
+        aircraftGrid.appendChild(aircraftCard);
+      });
+    }
+
+    function createAircraftCard(aircraft) {
+      const card = document.createElement('div');
+      card.className = 'aircraft-card';
+      card.dataset.id = aircraft.id;
+      
+      const isSelected = selectedAircraft.some(a => a.id === aircraft.id);
+      
+      if (currentView === 'grid') {
+        card.innerHTML = `
+          <div class="aircraft-header">
+            <h3 class="aircraft-name">${aircraft.name}</h3>
+            <p class="aircraft-maker">${aircraft.maker}</p>
+          </div>
+          <div class="aircraft-info">
+            <p class="aircraft-description">${aircraft.description}</p>
+            
+            <div class="aircraft-specs">
+              <div class="spec-item">
+                <span class="spec-label">类型</span>
+                <span class="spec-value">${aircraft.type}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">航程</span>
+                <span class="spec-value">${aircraft.range.toLocaleString()} km</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">载客</span>
+                <span class="spec-value">${aircraft.passengers}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">巡航速度</span>
+                <span class="spec-value">${aircraft.cruiseSpeed} km/h</span>
+              </div>
+            </div>
+            
+            <div class="aircraft-actions">
+              <button class="btn-secondary details-btn" data-id="${aircraft.id}">详情</button>
+              <button class="btn-primary compare-btn ${isSelected ? 'selected' : ''}" data-id="${aircraft.id}">
+                ${isSelected ? '已选择' : '加入对比'}
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        // 列表视图
+        card.innerHTML = `
+          <div class="aircraft-header">
+            <h3 class="aircraft-name">${aircraft.name}</h3>
+            <p class="aircraft-maker">${aircraft.maker} • ${aircraft.type} • ${aircraft.era}</p>
+          </div>
+          <div class="aircraft-info">
+            <p class="aircraft-description">${aircraft.description}</p>
+            
+            <div class="aircraft-specs list-specs">
+              <div class="spec-item">
+                <span class="spec-label">航程</span>
+                <span class="spec-value">${aircraft.range.toLocaleString()} km</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">载客</span>
+                <span class="spec-value">${aircraft.passengers}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">巡航速度</span>
+                <span class="spec-value">${aircraft.cruiseSpeed} km/h</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">长度</span>
+                <span class="spec-value">${aircraft.length} m</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">翼展</span>
+                <span class="spec-value">${aircraft.wingspan} m</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">状态</span>
+                <span class="spec-value status-${aircraft.status === '在产' ? 'active' : 'inactive'}">${aircraft.status}</span>
+              </div>
+            </div>
+            
+            <div class="aircraft-actions">
+              <button class="btn-secondary details-btn" data-id="${aircraft.id}">详情</button>
+              <button class="btn-primary compare-btn ${isSelected ? 'selected' : ''}" data-id="${aircraft.id}">
+                ${isSelected ? '已选择' : '加入对比'}
+              </button>
+            </div>
+          </div>
+        `;
+      }
+      
+      // 添加事件监听器
+      const compareBtn = card.querySelector('.compare-btn');
+      compareBtn.addEventListener('click', () => toggleAircraftCompare(aircraft));
+      
+      const detailsBtn = card.querySelector('.details-btn');
+      detailsBtn.addEventListener('click', () => showAircraftDetails(aircraft));
+      
+      return card;
+    }
+
+    function toggleAircraftCompare(aircraft) {
+      const index = selectedAircraft.findIndex(a => a.id === aircraft.id);
+      
+      if (index === -1) {
+        // 添加到对比
+        if (selectedAircraft.length >= 4) {
+          alert('最多只能选择4架飞机进行对比');
+          return;
+        }
+        selectedAircraft.push(aircraft);
+      } else {
+        // 从对比中移除
+        selectedAircraft.splice(index, 1);
+      }
+      
+      updateCompareUI();
+      renderAircraftGrid(); // 重新渲染以更新按钮状态
+    }
+
+    function updateCompareUI() {
+      // 更新已选择飞机显示
+      selectedAircraftContainer.innerHTML = '';
+      
+      if (selectedAircraft.length === 0) {
+        selectedAircraftContainer.innerHTML = '<p class="placeholder-text">尚未选择任何飞机</p>';
+        clearCompareBtn.disabled = true;
+        runCompareBtn.disabled = true;
+      } else {
+        selectedAircraft.forEach(aircraft => {
+          const selectedItem = document.createElement('div');
+          selectedItem.className = 'selected-aircraft-item';
+          selectedItem.innerHTML = `
+            <span>${aircraft.name}</span>
+            <button class="remove-aircraft" data-id="${aircraft.id}">×</button>
+          `;
+          
+          const removeBtn = selectedItem.querySelector('.remove-aircraft');
+          removeBtn.addEventListener('click', () => toggleAircraftCompare(aircraft));
+          
+          selectedAircraftContainer.appendChild(selectedItem);
+        });
+        
+        clearCompareBtn.disabled = false;
+        runCompareBtn.disabled = false;
+      }
+    }
+
+    function clearCompare() {
+      selectedAircraft = [];
+      updateCompareUI();
+      renderAircraftGrid();
+      compareTable.innerHTML = '';
+    }
+
+    function runCompare() {
+      if (selectedAircraft.length < 2) {
+        alert('请至少选择2架飞机进行对比');
+        return;
+      }
+      
+      // 滚动到对比区域
+      document.getElementById('compareSection').scrollIntoView({ behavior: 'smooth' });
+      
+      // 生成对比表格
+      compareTable.innerHTML = generateCompareTable();
+    }
+
+    function generateCompareTable() {
+      const specs = [
+        { key: 'name', label: '型号' },
+        { key: 'maker', label: '制造商' },
+        { key: 'type', label: '类型' },
+        { key: 'era', label: '年代' },
+        { key: 'engine', label: '发动机' },
+        { key: 'range', label: '航程 (km)', format: (val) => val.toLocaleString() },
+        { key: 'passengers', label: '载客量' },
+        { key: 'cruiseSpeed', label: '巡航速度 (km/h)' },
+        { key: 'length', label: '长度 (m)' },
+        { key: 'wingspan', label: '翼展 (m)' },
+        { key: 'firstFlight', label: '首飞日期' },
+        { key: 'status', label: '状态' }
+      ];
+      
+      let tableHTML = `
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>规格</th>
+      `;
+      
+      // 表头 - 飞机名称
+      selectedAircraft.forEach(aircraft => {
+        tableHTML += `<th>${aircraft.name}</th>`;
+      });
+      
+      tableHTML += `</tr></thead><tbody>`;
+      
+      // 表格内容
+      specs.forEach(spec => {
+        tableHTML += `<tr><td>${spec.label}</td>`;
+        
+        selectedAircraft.forEach(aircraft => {
+          let value = aircraft[spec.key];
+          if (spec.format) {
+            value = spec.format(value);
+          }
+          
+          // 高亮显示最优值（对于数值型规格）
+          if (typeof value === 'number' || !isNaN(value)) {
+            const numericValue = parseFloat(value);
+            if (!isNaN(numericValue)) {
+              const values = selectedAircraft.map(a => {
+                const val = a[spec.key];
+                return typeof val === 'number' ? val : parseFloat(val);
+              }).filter(v => !isNaN(v));
+              
+              const maxValue = Math.max(...values);
+              const minValue = Math.min(...values);
+              
+              // 对于航程、载客量等，越大越好
+              if (['range', 'passengers', 'cruiseSpeed'].includes(spec.key)) {
+                if (numericValue === maxValue) {
+                  tableHTML += `<td class="highlight-cell">${value}</td>`;
+                  return;
+                }
+              }
+              // 对于长度、翼展等，根据情况判断（这里简单处理）
+              else if (['length', 'wingspan'].includes(spec.key)) {
+                // 不特别高亮
+              }
+            }
+          }
+          
+          tableHTML += `<td>${value}</td>`;
+        });
+        
+        tableHTML += `</tr>`;
+      });
+      
+      tableHTML += `</tbody></table>`;
+      
+      return tableHTML;
+    }
+
+    function showAircraftDetails(aircraft) {
+      // 在实际应用中，这里可以打开一个模态框显示详细信息
+      alert(`${aircraft.name} 详细信息:\n\n制造商: ${aircraft.maker}\n类型: ${aircraft.type}\n航程: ${aircraft.range.toLocaleString()} km\n载客: ${aircraft.passengers}\n巡航速度: ${aircraft.cruiseSpeed} km/h\n首飞: ${aircraft.firstFlight}\n状态: ${aircraft.status}\n\n${aircraft.description}`);
+    }
+
+    function updateResultsCount() {
+      const count = filteredAircraft.length;
+      resultsCount.textContent = `找到 ${count} 架飞机`;
+    }
+
+    function initStatsCharts() {
+      // 制造商分布
+      const makerCounts = {};
+      aircraftData.forEach(aircraft => {
+        makerCounts[aircraft.maker] = (makerCounts[aircraft.maker] || 0) + 1;
+      });
+      
+      const makerChart = document.getElementById('makerChart');
+      makerChart.innerHTML = Object.entries(makerCounts)
+        .map(([maker, count]) => `
+          <div class="chart-item">
+            <span class="chart-label">${maker}</span>
+            <span class="chart-bar" style="width: ${(count / aircraftData.length) * 100}%"></span>
+            <span class="chart-value">${count}</span>
+          </div>
+        `)
+        .join('');
+      
+      // 类型分布
+      const typeCounts = {};
+      aircraftData.forEach(aircraft => {
+        typeCounts[aircraft.type] = (typeCounts[aircraft.type] || 0) + 1;
+      });
+      
+      const typeChart = document.getElementById('typeChart');
+      typeChart.innerHTML = Object.entries(typeCounts)
+        .map(([type, count]) => `
+          <div class="chart-item">
+            <span class="chart-label">${type}</span>
+            <span class="chart-bar" style="width: ${(count / aircraftData.length) * 100}%"></span>
+            <span class="chart-value">${count}</span>
+          </div>
+        `)
+        .join('');
+      
+      // 年代分布
+      const eraCounts = {};
+      aircraftData.forEach(aircraft => {
+        eraCounts[aircraft.era] = (eraCounts[aircraft.era] || 0) + 1;
+      });
+      
+      const eraChart = document.getElementById('eraChart');
+      eraChart.innerHTML = Object.entries(eraCounts)
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([era, count]) => `
+          <div class="chart-item">
+            <span class="chart-label">${era}</span>
+            <span class="chart-bar" style="width: ${(count / aircraftData.length) * 100}%"></span>
+            <span class="chart-value">${count}</span>
+          </div>
+        `)
+        .join('');
+    }
+
+    // 加载保存的主题
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      const themeIcon = themeToggle.querySelector('.theme-icon');
+      themeIcon.innerHTML = savedTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
+  </script>
 </body>
 </html>
