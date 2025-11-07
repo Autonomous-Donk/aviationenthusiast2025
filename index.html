@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>高级飞机数据库 | 2025年最新版</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- 添加 Turnstile JavaScript -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <style>
     :root {
       --primary: #1a365d;
@@ -471,6 +473,13 @@
     .btn-auth:hover {
       background: var(--accent-light);
       transform: translateY(-2px);
+    }
+
+    /* Turnstile 小部件样式 */
+    .turnstile-container {
+      margin: 1rem 0;
+      display: flex;
+      justify-content: center;
     }
 
     /* 收藏夹样式 */
@@ -1270,6 +1279,13 @@
     .notification.show {
       transform: translateX(0);
     }
+
+    /* 错误样式 */
+    .error {
+      color: #e74c3c;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
   </style>
 </head>
 <body>
@@ -1336,6 +1352,10 @@
           <label for="loginPassword">密码</label>
           <input type="password" id="loginPassword" required>
         </div>
+        <!-- Turnstile 小部件 -->
+        <div class="turnstile-container">
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAB_v5ugGSsMqr9KP" data-theme="auto"></div>
+        </div>
         <button type="submit" class="btn-auth">登录</button>
       </form>
       
@@ -1351,6 +1371,10 @@
         <div class="form-group">
           <label for="registerPassword">密码</label>
           <input type="password" id="registerPassword" required>
+        </div>
+        <!-- Turnstile 小部件 -->
+        <div class="turnstile-container">
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAB_v5ugGSsMqr9KP" data-theme="auto"></div>
         </div>
         <button type="submit" class="btn-auth">注册</button>
       </form>
@@ -1931,6 +1955,42 @@
     const exportSection = document.getElementById('exportSection');
     const notification = document.getElementById('notification');
 
+    // Turnstile 验证函数
+    async function verifyTurnstile() {
+      const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]');
+      
+      if (!turnstileResponse || !turnstileResponse.value) {
+        return { success: false, message: '请完成人机验证' };
+      }
+
+      try {
+        // 在实际应用中，这里应该发送到您的后端服务器进行验证
+        // 由于这是前端演示，我们只做基本检查
+        const response = turnstileResponse.value;
+        
+        if (response && response.length > 10) {
+          return { success: true };
+        } else {
+          return { success: false, message: '验证失败，请重试' };
+        }
+      } catch (error) {
+        console.error('Turnstile verification error:', error);
+        return { success: false, message: '验证服务暂时不可用' };
+      }
+    }
+
+    // 重置 Turnstile
+    function resetTurnstile() {
+      // Turnstile 会自动重置，这里我们只需要确保有新的挑战
+      const turnstileElements = document.querySelectorAll('.cf-turnstile');
+      turnstileElements.forEach(element => {
+        // 重新渲染 Turnstile
+        if (window.turnstile) {
+          window.turnstile.reset();
+        }
+      });
+    }
+
     // 初始化
     document.addEventListener('DOMContentLoaded', function() {
       initializeApp();
@@ -2006,6 +2066,16 @@
       // 登录按钮事件
       document.getElementById('loginBtn').addEventListener('click', () => {
         authModal.classList.add('active');
+        // 重置 Turnstile 当打开模态框时
+        setTimeout(resetTurnstile, 100);
+      });
+
+      // 关闭模态框时重置表单和 Turnstile
+      authModal.addEventListener('click', (e) => {
+        if (e.target === authModal) {
+          authModal.classList.remove('active');
+          resetTurnstile();
+        }
       });
     }
 
@@ -2402,12 +2472,29 @@
         loginForm.style.display = 'none';
         registerForm.style.display = 'flex';
       }
+      
+      // 重置 Turnstile 当切换标签时
+      setTimeout(resetTurnstile, 100);
     }
 
-    function handleLogin(e) {
+    async function handleLogin(e) {
       e.preventDefault();
+      
+      // 验证 Turnstile
+      const turnstileResult = await verifyTurnstile();
+      if (!turnstileResult.success) {
+        showNotification(turnstileResult.message, 'error');
+        return;
+      }
+      
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
+      
+      // 简单的表单验证
+      if (!email || !password) {
+        showNotification('请填写所有必填字段', 'error');
+        return;
+      }
       
       // 模拟登录
       currentUser = {
@@ -2421,13 +2508,36 @@
       updateUserInterface();
       authModal.classList.remove('active');
       showNotification('登录成功！', 'success');
+      
+      // 重置表单
+      loginForm.reset();
+      resetTurnstile();
     }
 
-    function handleRegister(e) {
+    async function handleRegister(e) {
       e.preventDefault();
+      
+      // 验证 Turnstile
+      const turnstileResult = await verifyTurnstile();
+      if (!turnstileResult.success) {
+        showNotification(turnstileResult.message, 'error');
+        return;
+      }
+      
       const name = document.getElementById('registerName').value;
       const email = document.getElementById('registerEmail').value;
       const password = document.getElementById('registerPassword').value;
+      
+      // 简单的表单验证
+      if (!name || !email || !password) {
+        showNotification('请填写所有必填字段', 'error');
+        return;
+      }
+      
+      if (password.length < 6) {
+        showNotification('密码长度至少6位', 'error');
+        return;
+      }
       
       // 模拟注册
       currentUser = {
@@ -2441,6 +2551,10 @@
       updateUserInterface();
       authModal.classList.remove('active');
       showNotification('注册成功！', 'success');
+      
+      // 重置表单
+      registerForm.reset();
+      resetTurnstile();
     }
 
     function handleLogout() {
@@ -2580,6 +2694,15 @@
     function showNotification(message, type = 'info') {
       notification.textContent = message;
       notification.className = `notification show`;
+      
+      // 根据类型添加不同的样式
+      if (type === 'error') {
+        notification.style.borderLeftColor = '#e74c3c';
+      } else if (type === 'success') {
+        notification.style.borderLeftColor = '#2ecc71';
+      } else {
+        notification.style.borderLeftColor = 'var(--accent)';
+      }
       
       setTimeout(() => {
         notification.classList.remove('show');
